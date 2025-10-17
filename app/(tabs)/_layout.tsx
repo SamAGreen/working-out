@@ -20,6 +20,7 @@ export default function TabLayout() {
                 },
             }}
         >
+            
             <Tabs.Screen
                 name="index"
                 options={{
@@ -29,6 +30,17 @@ export default function TabLayout() {
                     ),
                 }}
             />
+
+            <Tabs.Screen
+                name="planning"
+                options={{
+                    title: 'Planning',
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons name={focused ? 'pencil-sharp' : 'pencil-outline'} color={color} size={24} />
+                    ),
+                }}
+            />
+
             <Tabs.Screen
                 name="dummy"
                 options={{
@@ -37,12 +49,20 @@ export default function TabLayout() {
                 }}
             />
 
+            <Tabs.Screen name="exercises"
+                options={{
+                    title: 'Exercises',
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons name={focused ? 'barbell-sharp' : 'barbell-outline'} color={color} size={24} />
+                    )
+                }} />
+
             <Tabs.Screen
                 name="settings"
                 options={{
                     title: 'Settings',
                     tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={24} />
+                        <Ionicons name={focused ? 'settings-sharp' : 'settings-outline'} color={color} size={24} />
                     ),
                 }}
             />

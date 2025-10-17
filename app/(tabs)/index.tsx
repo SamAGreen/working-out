@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   calendarContainer: {
     width: '100%',
-    flex: 1,
+    flex: 2,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -49,20 +49,20 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     width: '100%',
-    flex: 2,
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3a3f4e',
+    backgroundColor: '#2f3a',
     borderRadius: 8,
   },
   homeText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600',
   },
   workoutItem: {
-    color: '#a23a',
+    backgroundColor: '#1abf',
     height: 50,
-    width: '100%'
+    width: 200,
+
   }
 });
