@@ -47,8 +47,13 @@ export async function getExercises(): Promise<Exercise[]> {
   return db.getAllAsync<Exercise>('SELECT * FROM exercises');
 }
 
-export async function addExercise(exerciseName: string) {
+export async function addExercise(exerciseName: string): Promise<number> {
   const db = await dbPromise;
-  const result = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', exerciseName);
-  console.log(result)
+  try {
+    const result = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', exerciseName);
+    return result.lastInsertRowId;
+  } catch (error) {
+    console.log('There has been an error adding');
+    return 0; 
+  }
 }

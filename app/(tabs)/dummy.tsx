@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Alert, Pressable, StyleSheet } from "react-native"
 import { useNavigation, useNavigationState } from '@react-navigation/native';
+import { useAddLocation } from "../hooks/useAddStore";
 
 export default function DummyScreen() {
     return <></>
@@ -16,20 +17,23 @@ export const PlusButton = () => {
   // Access the route name of the active tab
   const currentRouteName = useNavigationState((state) => state.routes[state.index].name);
 
+  const setAddLocation =  useAddLocation((state) => state.setAddLocation);
+
   const onPress = () => {
     console.log('Button Pressed');
     if (currentRouteName === 'index') {
         console.log('home');
       Alert.alert('You pressed + on the Home tab');
     } else if (currentRouteName === 'planning') {
-      Alert.alert('You pressed + on the Settings tab');
+      Alert.alert('You pressed + on the planning tab');
+    } else if (currentRouteName === 'exercises') {
+      setAddLocation('exercises');
     } else {
-      Alert.alert(`You pressed + on tab: ${currentRouteName}`);
+      
     }
 };
     
     return <Pressable onPress={onPress} style={styles.button}>
-
         <Ionicons name="add-circle-outline" size={48} color="#000" />
     </Pressable>
 };

@@ -1,0 +1,14 @@
+import { create } from 'zustand'
+
+export type AddLocation = 'home' | 'planning' | 'exercises' | 'settings' | 'none';
+
+type AddLocationStore = {
+    plusLocation: AddLocation;
+    setAddLocation: (location: AddLocation) => void;
+    resetAddLocation: () => void;
+};
+export const useAddLocation = create<AddLocationStore>((set) => ({
+    plusLocation: 'none' as AddLocation,
+    setAddLocation: (location: AddLocation) => set({ plusLocation: location }),
+    resetAddLocation: () => set({ plusLocation: 'none' })
+}));

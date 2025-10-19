@@ -11,7 +11,7 @@ export function useExercises() {
     getExercises()
       .then((rows) => {
         setAllExercises(rows);
-        setFilteredExercises(rows); 
+        setFilteredExercises(rows);
       })
       .catch((err) => {
         console.error('Failed to load exercises:', err);
@@ -30,10 +30,22 @@ export function useExercises() {
     setFilteredExercises(filtered);
   };
 
+  const addExerciseToList = (exercise: Exercise) => {
+    const newExerciseList = [...allExercises, exercise]
+    setAllExercises(newExerciseList);
+
+    const upperSearch = searchValue.toUpperCase();
+    const shouldBeVisible = exercise.name.toUpperCase().includes(upperSearch);
+
+    if (shouldBeVisible) {
+      setFilteredExercises([...filteredExercises, exercise]);
+    }
+  }
+
   return {
     filteredExercises,
     searchValue,
     handleSearch,
-    allExercises,
+    addExerciseToList
   };
 }

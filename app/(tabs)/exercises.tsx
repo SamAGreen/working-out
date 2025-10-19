@@ -1,15 +1,40 @@
-import React from 'react';
-import { Text, View, StyleSheet, FlatList, TextInput } from 'react-native';
-import { useExercises } from '../hooks/exercises';
+import React, { useState } from 'react';
+import { Text, View, StyleSheet, FlatList, TextInput, Modal, Pressable } from 'react-native';
+import { useExercises } from '../hooks/useExercises';
+import { useAddLocation } from '../hooks/useAddStore';
+import { addExercise } from '../db/database';
 
-type ItemProps = {title: string, id: number};
+type ItemProps = { title: string, id: number };
 
 export default function ExercisesScreen() {
 
-  const {filteredExercises , searchValue, handleSearch, allExercises} = useExercises();
+  const { filteredExercises, searchValue, handleSearch, addExerciseToList } = useExercises();
+  const [exerciseName, setExerciseName] = useState('');
+
+  const resetAddLocation = useAddLocation((state) => state.resetAddLocation);
+  const plusLocation = useAddLocation((state) => state.plusLocation);
+
+  const handleAdd = () => {
+    if (exerciseName.trim() === '') return;
+
+    const name = exerciseName.trim();
+    
+    addExercise(name)
+      .then((id) => {
+        addExerciseToList({ id, name })
+      }).catch((error) => {
+        console.log("Joa, dann weiß ich auch nicht mehr");
+      });
+
+    setExerciseName('');
+    resetAddLocation();
+  };
+
+
+
 
   return (
-   <View style={styles.container}>
+    <View style={styles.container}>
       <TextInput
         placeholder="Search here..."
         value={searchValue}
@@ -22,6 +47,34 @@ export default function ExercisesScreen() {
         keyExtractor={(item) => item.id.toString()} // Unique key for each item
         style={styles.list}
       />
+      <Modal
+        transparent={true}
+        visible={plusLocation === 'exercises'}
+        onRequestClose={resetAddLocation}
+        onDismiss={resetAddLocation}
+      >
+        <View style={styles.modal}>
+          <Text style={styles.modalText}>THIS IS A MODAL</Text>
+          <TextInput
+            style={styles.input}
+            placeholder='Add Exercise...'
+            value={exerciseName}
+            onChangeText={setExerciseName}
+          />
+          <Pressable
+            style={styles.button}
+            onPress={resetAddLocation}
+          >
+            <Text style={styles.text}>Close</Text>
+          </Pressable>
+          <Pressable
+            style={styles.button}
+            onPress={handleAdd}
+          >
+            <Text style={styles.text}>Add Exercise</Text>
+          </Pressable>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -44,8 +97,8 @@ const styles = StyleSheet.create({
     alignContent: 'center'
   },
   itemText: {
-    color: "black", // Text color
-    fontSize: 18, // Font size for the text
+    color: "black",
+    fontSize: 18,
   },
   input: {
     height: 40,
@@ -58,30 +111,34 @@ const styles = StyleSheet.create({
   list: {
     width: "100%",
     display: 'flex',
+  },
+  modal: {
+    width: 200,
+    height: 200,
+    backgroundColor: '#f2ab',
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  modalText: {
+    fontSize: 30,
+    color: '#cf2a'
+  },
+  button: {
+    backgroundColor: '#000',
+    width: 50,
+    height: 20,
+    color: '#fff'
   }
 });
 
 
 
-const Item = ({title}: ItemProps) => (
+const Item = ({ title }: ItemProps) => (
   <View style={styles.item}>
     <Text style={styles.itemText}>{title}</Text>
   </View>
 );
-
-
-
-const DATA = [
-  { id: "1", title: "Back Squat" },
-  { id: "2", title: "Benchpress" },
-  { id: "3", title: "Deadlift"},
-  { id: "4", title: "Overhead Press" },
-  { id: "5", title: "Front Squat" },
-  { id: "6", title: "Bicep Curl" },
-  { id: "7", title: "Lateral Raise" },
-  { id: "8", title: "Leg Extension" },
-  { id: "9", title: "Calf Raise" },
-  { id: "10", title: "Leg Raise" },
-  { id: "11", title: "Lying Leg Raise" },
-  { id: "12", title: "Bulgarian Split Squat" },
-];
