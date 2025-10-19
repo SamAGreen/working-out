@@ -8,7 +8,7 @@ export default function DummyScreen() {
 
 export const PlusButton = () => {
 
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
   // Access the index of the active tab
   const currentTabIndex = useNavigationState((state) => state.index);

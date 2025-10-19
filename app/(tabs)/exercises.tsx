@@ -1,10 +1,28 @@
 import React from 'react';
 import { Text, View, StyleSheet, FlatList, TextInput } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { useExercises } from '../hooks/exercises';
+
+type ItemProps = {title: string, id: number};
 
 export default function ExercisesScreen() {
+
+  const {filteredExercises , searchValue, handleSearch, allExercises} = useExercises();
+
   return (
-    <Search />
+   <View style={styles.container}>
+      <TextInput
+        placeholder="Search here..."
+        value={searchValue}
+        onChangeText={handleSearch}
+        style={styles.input}
+      />
+      <FlatList
+        data={filteredExercises} // Data to display in the list
+        renderItem={({ item }) => <Item title={item.name} id={item.id} />} // Render each item using the Item component
+        keyExtractor={(item) => item.id.toString()} // Unique key for each item
+        style={styles.list}
+      />
+    </View>
   );
 }
 
@@ -43,7 +61,7 @@ const styles = StyleSheet.create({
   }
 });
 
-type ItemProps = {title: string, id: string};
+
 
 const Item = ({title}: ItemProps) => (
   <View style={styles.item}>
@@ -51,40 +69,6 @@ const Item = ({title}: ItemProps) => (
   </View>
 );
 
-export const Search = () => {
-  const [data, setData] = React.useState<ItemProps[]>(DATA);
-  const [searchValue, setSearchValue] = React.useState<string>('');
-  const arrayholder = React.useRef<ItemProps[]>(DATA); 
-
-  const searchFunction = (text: string): void => {
-    const updatedData = arrayholder.current.filter((item) => {
-      const itemData = item.title.toUpperCase();
-      const textData = text.toUpperCase();
-      return itemData.includes(textData);
-    });
-
-    setData(updatedData);
-    setSearchValue(text);
-  };
-
-  return (
-    <View style={styles.container}> {/* Main container style */}
-      {/* SearchBar component for user input */}
-      <TextInput
-        placeholder="Search here..."
-        value={searchValue}
-        onChangeText={searchFunction}
-        style={styles.input}
-      />
-      <FlatList
-        data={data} // Data to display in the list
-        renderItem={({ item }) => <Item title={item.title} id={item.id} />} // Render each item using the Item component
-        keyExtractor={(item) => item.id} // Unique key for each item
-        style={styles.list}
-      />
-    </View>
-  );
-};
 
 
 const DATA = [
