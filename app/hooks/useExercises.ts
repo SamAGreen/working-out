@@ -3,49 +3,35 @@ import { getExercises, Exercise } from '../db/database';
 
 export function useExercises() {
   const [allExercises, setAllExercises] = useState<Exercise[]>([]);
-  const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
   const [searchValue, setSearchValue] = useState('');
-
 
   useEffect(() => {
     getExercises()
-      .then((rows) => {
-        setAllExercises(rows);
-        setFilteredExercises(rows);
-      })
-      .catch((err) => {
-        console.error('Failed to load exercises:', err);
-      });
+      .then((rows) => setAllExercises(rows))
+      .catch((err) => console.error('Failed to load exercises:', err));
   }, []);
-
 
   const handleSearch = (text: string) => {
     setSearchValue(text);
-
-    const upperText = text.toUpperCase();
-    const filtered = allExercises.filter((exercise) =>
-      exercise.name.toUpperCase().includes(upperText)
-    );
-
-    setFilteredExercises(filtered);
   };
 
   const addExerciseToList = (exercise: Exercise) => {
-    const newExerciseList = [...allExercises, exercise]
-    setAllExercises(newExerciseList);
+    setAllExercises((prev) => [...prev, exercise]);
+  };
 
-    const upperSearch = searchValue.toUpperCase();
-    const shouldBeVisible = exercise.name.toUpperCase().includes(upperSearch);
+  const removeExerciseFromList = (exercise: Exercise) => {
+    setAllExercises((prev) => prev.filter(item => item.id !== exercise.id));
+  };
 
-    if (shouldBeVisible) {
-      setFilteredExercises([...filteredExercises, exercise]);
-    }
-  }
+  const filteredExercises = allExercises.filter((exercise) =>
+    exercise.name.toUpperCase().includes(searchValue.toUpperCase())
+  );
 
   return {
     filteredExercises,
     searchValue,
     handleSearch,
-    addExerciseToList
+    addExerciseToList,
+    removeExerciseFromList
   };
 }

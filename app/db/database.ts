@@ -57,3 +57,21 @@ export async function addExercise(exerciseName: string): Promise<number> {
     return 0; 
   }
 }
+
+export async function deleteExercise(exerciseId: number): Promise<boolean> {
+  const db = await dbPromise;
+  try {
+    const result = await db.runAsync('DELETE FROM exercises WHERE id = ?', exerciseId);
+    if (result.changes === 1) {
+      return true;
+    } 
+    else{
+      console.log("Delete fucked up, num deleted: "+result.changes)
+      return false;
+    }
+    
+  } catch {
+    console.log("Delete fucked uo");
+    return false;
+  }
+}
