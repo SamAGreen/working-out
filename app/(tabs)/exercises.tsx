@@ -18,10 +18,12 @@ export default function ExercisesScreen() {
     if (exerciseName.trim() === '') return;
 
     const name = exerciseName.trim();
-    
+
     addExercise(name)
       .then((id) => {
-        addExerciseToList({ id, name })
+        if(id > 0) {
+          addExerciseToList({ id, name });
+        } 
       }).catch((error) => {
         console.log("Joa, dann weiß ich auch nicht mehr");
       });
