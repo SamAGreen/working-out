@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { router } from 'expo-router';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function Index() {
   return (
@@ -7,22 +8,29 @@ export default function Index() {
         <Text style={styles.calendarText}>Calendar</Text>
       </View>
       <View style={styles.listContainer}>
-        <FlatList showsVerticalScrollIndicator={false} data={dummyData} renderItem={({item}) => <WorkoutItem title={item.title}/>}/>
+        <FlatList showsVerticalScrollIndicator={false} data={dummyData} renderItem={({ item }) => <WorkoutItem title={item.title} id={item.id}  />} />
       </View>
     </View>
   );
 }
 
-type ItemProps = {title: string};
+type ItemProps = { title: string, id:number };
 
 const dummyData: ItemProps[] = Array.from({ length: 1000 }, (_, i) => ({
-  title: `Item ${i + 1}`,
+  title: `Item ${i}`, id: i,
 }));
 
-const WorkoutItem = ({title}: ItemProps) => (
-  <View style={styles.workoutItem}>
-    <Text style={styles.homeText}>{title}</Text>
-  </View>
+const WorkoutItem = (item: ItemProps) => (
+  <Pressable onPress={() =>
+          router.navigate({
+            pathname: '/workouts/[workout]',
+            params: { workout: item.id }
+          })
+        }>
+    <View style={styles.workoutItem}>
+      <Text style={styles.homeText}>{item.title}</Text>
+    </View>
+  </Pressable>
 );
 
 const styles = StyleSheet.create({
@@ -32,7 +40,7 @@ const styles = StyleSheet.create({
     padding: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    gap:12
+    gap: 12
   },
   calendarContainer: {
     width: '100%',
