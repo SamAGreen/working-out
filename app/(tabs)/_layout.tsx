@@ -6,21 +6,19 @@ import { PlusButton } from './dummy';
 
 export default function TabLayout() {
     return (
+
         <Tabs
             screenOptions={{
                 tabBarActiveTintColor: '#ffd33d',
-                headerStyle: {
-                    backgroundColor: '#25292e',
-                },
-                headerShadowVisible: false,
-                headerTintColor: '#fff',
                 tabBarStyle: {
                     backgroundColor: '#ffff',
                     borderTopWidth: 0
+
                 },
+                headerShown: false
             }}
         >
-            
+
             <Tabs.Screen
                 name="index"
                 options={{
@@ -64,6 +62,12 @@ export default function TabLayout() {
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons name={focused ? 'settings-sharp' : 'settings-outline'} color={color} size={24} />
                     ),
+                }}
+            />
+            <Tabs.Screen
+                name="workouts/[workout]"
+                options={{
+                    href: null,
                 }}
             />
         </Tabs>

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, TextInput, Modal, Pressable, Alert } 
 import { useExercises } from '../hooks/useExercises';
 import { addExercise, deleteExercise, Exercise } from '../db/database';
 import AddExerciseModal from '../components/exercises/AddExerciseModal';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
@@ -31,7 +32,7 @@ export default function ExercisesScreen() {
 );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TextInput
         placeholder="Search here..."
         value={searchValue}
@@ -45,7 +46,7 @@ export default function ExercisesScreen() {
         style={styles.list}
       />
       <AddExerciseModal addExercise={addExercise} addExerciseToList={addExerciseToList} />
-    </View>
+    </SafeAreaView>
   );
 }
 

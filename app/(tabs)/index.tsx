@@ -1,16 +1,17 @@
 import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Index() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
         <Text style={styles.calendarText}>Calendar</Text>
       </View>
       <View style={styles.listContainer}>
         <FlatList showsVerticalScrollIndicator={false} data={dummyData} renderItem={({ item }) => <WorkoutItem title={item.title} id={item.id}  />} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
