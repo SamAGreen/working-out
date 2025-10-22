@@ -1,30 +1,34 @@
 import { Modal, Pressable, TextInput, View, Text, StyleSheet } from "react-native";
 import { useState } from "react";
 
-interface AddItemModalProps<T> {
+export interface AddItemModalProps<T, U> {
   visible: boolean;
   onClose: () => void;
-  onAdd: (name: string) => Promise<T>;
+  onAdd: (shell: U) => Promise<T>;
   onAddToList: (item: T) => void;
+  createShell: (name: string) => U;
   placeholder?: string;
   title?: string;
 }
 
-export default function AddItemModal<T>({
+export default function AddItemModal<T,U>({
   visible,
   onClose,
   onAdd,
   onAddToList,
+  createShell,
   placeholder = "Add Item...",
   title = "Add Item",
-}: AddItemModalProps<T>) {
+}: AddItemModalProps<T,U>) {
   const [itemName, setItemName] = useState('');
 
   const handleAdd = () => {
     const trimmed = itemName.trim();
     if (!trimmed) return;
 
-    onAdd(trimmed)
+    const shell = createShell(trimmed);
+
+    onAdd(shell)
       .then((result) => {
         onAddToList(result);
       })

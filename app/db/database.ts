@@ -5,6 +5,10 @@ export type Exercise = {
   name: string;
 };
 
+export type ExerciseShell = {
+  name: string;
+};
+
 export type Workout = {
   id: number;
   name: string;
@@ -92,20 +96,20 @@ export async function getExercises(): Promise<Exercise[]> {
   return db.getAllAsync<Exercise>('SELECT * FROM exercises');
 }
 
-export async function addExercise(exerciseName: string): Promise<Exercise> {
+export async function addExercise(exercise: ExerciseShell): Promise<Exercise> {
   const db = await dbPromise;
   try {
-    const insertedId = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', exerciseName);
-  
-    const result = await db.getFirstAsync<Exercise>('SELECT * FROM exercises WHERE id = ?', insertedId.lastInsertRowId);
-    
-    if(result){
+    const insertResult = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', exercise.name);
+
+    const result = await db.getFirstAsync<Exercise>('SELECT * FROM exercises WHERE id = ?', insertResult.lastInsertRowId);
+
+    if (result) {
       return result;
     }
-    return {id: -1, name: "yeah, that ain't right"}
+    return { id: -1, name: "yeah, that ain't right" }
   } catch (error) {
     console.error('There has been an error adding');
-    return {id: -1, name: "yeah, that ain't right"}
+    return { id: -1, name: "yeah, that ain't right" }
   }
 }
 
@@ -129,17 +133,24 @@ export async function deleteExercise(exerciseId: number): Promise<boolean> {
 
 export async function getAllWorkouts(): Promise<Workout[]> {
   const db = await dbPromise;
-  return db.getAllAsync<Workout>('SELECT * FROM workouts');
+  return db.getAllAsync<Workout>('SELECT * FROM workouts ORDER BY date DESC');
 }
 
-export async function addWorkout(workout: WorkoutShell): Promise<number> {
+export async function addWorkout(workout: WorkoutShell): Promise<Workout> {
   const db = await dbPromise;
   try {
-    const result = await db.runAsync('INSERT INTO workouts (name, date, duration) VALUES (?, ?, ?)', workout.name, workout.date, workout.duration);
-    return result.lastInsertRowId;
+    const insertResult = await db.runAsync('INSERT INTO workouts (name, date, duration) VALUES (?, ?, ?)', workout.name, workout.date, workout.duration);
+
+    const result = await db.getFirstAsync<Workout>('SELECT * FROM workouts WHERE id = ?', insertResult.lastInsertRowId);
+
+    if (result) {
+      return result;
+    }
+
+    return { id: -1, name: "yeah, that ain't right", date: "1970-01-01 00:00:00.000", duration: null }
   } catch (error) {
     console.error('There has been an error adding a workout');
-    return 0;
+    return { id: -1, name: "yeah, that ain't right", date: "1970-01-01 00:00:00.000", duration: null }
   }
 }
 

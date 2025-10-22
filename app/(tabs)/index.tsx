@@ -2,10 +2,26 @@ import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWorkouts } from '../hooks/useWorkouts';
-import { Workout } from '../db/database';
+import { addWorkout, Workout, WorkoutShell } from '../db/database';
+import AddItemModal from '../components/AddItemModal';
+import { useAddLocation } from '../hooks/useAddStore';
+import { getCurrentTimestamp } from '../util/time';
 
 export default function Index() {
-  const {allWorkouts} = useWorkouts()
+  const {allWorkouts, addWorkoutToList} = useWorkouts()
+
+  const localLocation = 'home';
+  const plusLocation = useAddLocation((state) => state.plusLocation);
+  const resetAddLocation = useAddLocation((state) => state.resetAddLocation);
+
+  const createWorkoutShell = (name: string): WorkoutShell => {
+    return {
+    name: name,
+    date: getCurrentTimestamp(),
+   duration: null
+}
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
@@ -14,6 +30,7 @@ export default function Index() {
       <View style={styles.listContainer}>
         <FlatList showsVerticalScrollIndicator={false} data={allWorkouts} renderItem={({ item }) => <WorkoutItem workout={item}  />} />
       </View>
+      <AddItemModal visible={plusLocation===localLocation} onClose={resetAddLocation} onAdd={addWorkout} onAddToList={addWorkoutToList} createShell={createWorkoutShell} />
     </SafeAreaView>
   );
 }

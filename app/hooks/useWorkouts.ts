@@ -10,7 +10,12 @@ export function useWorkouts() {
       .catch((err) => console.error('Failed to load workouts:', err));
   }, []);
 
+  const addWorkoutToList = (workout: Workout) => {
+    setAllWorkouts((prev) => [workout, ...prev]);
+  };
+
   return {
     allWorkouts,
+    addWorkoutToList
   };
 }

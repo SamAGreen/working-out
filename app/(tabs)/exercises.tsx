@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AddItemModal from '../components/AddItemModal';
-import { addExercise, deleteExercise, Exercise } from '../db/database';
+import { addExercise, deleteExercise, Exercise, ExerciseShell } from '../db/database';
 import { useAddLocation } from '../hooks/useAddStore';
 import { useExercises } from '../hooks/useExercises';
 
@@ -11,6 +11,7 @@ export default function ExercisesScreen() {
 
   const plusLocation = useAddLocation((state) => state.plusLocation);
   const resetAddLocation = useAddLocation((state) => state.resetAddLocation);
+  const localLocation = 'exercises';
 
   const handleDelete = (exercise: Exercise) => {
     deleteExercise(exercise.id).then((success) => {
@@ -21,6 +22,10 @@ export default function ExercisesScreen() {
         console.log("Something went wrong handling delete");
       }
     })
+  }
+
+  const createExerciseShell = (name: string): ExerciseShell => {
+    return {name: name};
   }
 
   const Item = ({ exercise }: { exercise: Exercise }) => (
@@ -45,7 +50,7 @@ export default function ExercisesScreen() {
         keyExtractor={(item) => item.id.toString()}
         style={styles.list}
       />
-      <AddItemModal visible={plusLocation === 'exercises'} onClose={resetAddLocation} onAdd={addExercise} onAddToList={addExerciseToList} />
+      <AddItemModal visible={plusLocation === localLocation} onClose={resetAddLocation} onAdd={addExercise} onAddToList={addExerciseToList} createShell={createExerciseShell} />
     </SafeAreaView>
   );
 }
