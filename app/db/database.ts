@@ -92,14 +92,20 @@ export async function getExercises(): Promise<Exercise[]> {
   return db.getAllAsync<Exercise>('SELECT * FROM exercises');
 }
 
-export async function addExercise(exerciseName: string): Promise<number> {
+export async function addExercise(exerciseName: string): Promise<Exercise> {
   const db = await dbPromise;
   try {
-    const result = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', exerciseName);
-    return result.lastInsertRowId;
+    const insertedId = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', exerciseName);
+  
+    const result = await db.getFirstAsync<Exercise>('SELECT * FROM exercises WHERE id = ?', insertedId.lastInsertRowId);
+    
+    if(result){
+      return result;
+    }
+    return {id: -1, name: "yeah, that ain't right"}
   } catch (error) {
     console.error('There has been an error adding');
-    return 0;
+    return {id: -1, name: "yeah, that ain't right"}
   }
 }
 

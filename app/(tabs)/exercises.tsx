@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, FlatList, TextInput, Modal, Pressable, Alert } from 'react-native';
-import { useExercises } from '../hooks/useExercises';
-import { addExercise, deleteExercise, Exercise } from '../db/database';
-import AddExerciseModal from '../components/exercises/AddExerciseModal';
+import React from 'react';
+import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-
-
-
+import AddItemModal from '../components/AddItemModal';
+import { addExercise, deleteExercise, Exercise } from '../db/database';
+import { useAddLocation } from '../hooks/useAddStore';
+import { useExercises } from '../hooks/useExercises';
 
 export default function ExercisesScreen() {
   const { filteredExercises, searchValue, handleSearch, addExerciseToList, removeExerciseFromList } = useExercises();
 
+  const plusLocation = useAddLocation((state) => state.plusLocation);
+  const resetAddLocation = useAddLocation((state) => state.resetAddLocation);
+
   const handleDelete = (exercise: Exercise) => {
-      deleteExercise(exercise.id).then((success) => {
-        if (success) {
-          removeExerciseFromList(exercise);
-          Alert.alert(exercise.name + ' DELETED');
-        } else {
-          console.log("Something went wrong handling delete");
-        }
-      })
+    deleteExercise(exercise.id).then((success) => {
+      if (success) {
+        removeExerciseFromList(exercise);
+        Alert.alert(exercise.name + ' DELETED');
+      } else {
+        console.log("Something went wrong handling delete");
+      }
+    })
   }
 
   const Item = ({ exercise }: { exercise: Exercise }) => (
-  <Pressable onLongPress={() => handleDelete(exercise)}>
-    <View style={styles.item}>
-      <Text style={styles.itemText}>{exercise.name}</Text>
-    </View>
-  </Pressable>
-);
+    <Pressable onLongPress={() => handleDelete(exercise)}>
+      <View style={styles.item}>
+        <Text style={styles.itemText}>{exercise.name}</Text>
+      </View>
+    </Pressable>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,10 +42,10 @@ export default function ExercisesScreen() {
       <FlatList
         data={filteredExercises}
         renderItem={({ item }) => <Item exercise={item} />}
-        keyExtractor={(item) => item.id.toString()} 
+        keyExtractor={(item) => item.id.toString()}
         style={styles.list}
       />
-      <AddExerciseModal addExercise={addExercise} addExerciseToList={addExerciseToList} />
+      <AddItemModal visible={plusLocation === 'exercises'} onClose={resetAddLocation} onAdd={addExercise} onAddToList={addExerciseToList} />
     </SafeAreaView>
   );
 }
