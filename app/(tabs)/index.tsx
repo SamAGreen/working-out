@@ -1,35 +1,35 @@
 import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useWorkouts } from '../hooks/useWorkouts';
+import { Workout } from '../db/database';
 
 export default function Index() {
+  const {allWorkouts} = useWorkouts()
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
         <Text style={styles.calendarText}>Calendar</Text>
       </View>
       <View style={styles.listContainer}>
-        <FlatList showsVerticalScrollIndicator={false} data={dummyData} renderItem={({ item }) => <WorkoutItem title={item.title} id={item.id}  />} />
+        <FlatList showsVerticalScrollIndicator={false} data={allWorkouts} renderItem={({ item }) => <WorkoutItem workout={item}  />} />
       </View>
     </SafeAreaView>
   );
 }
 
-type ItemProps = { title: string, id:number };
-
-const dummyData: ItemProps[] = Array.from({ length: 1000 }, (_, i) => ({
-  title: `Item ${i}`, id: i,
-}));
-
-const WorkoutItem = (item: ItemProps) => (
+const WorkoutItem = ({workout}: {workout: Workout}) => (
   <Pressable onPress={() =>
           router.navigate({
             pathname: '/workouts/[workout]',
-            params: { workout: item.id }
+            params: { workout: workout.id }
           })
         }>
     <View style={styles.workoutItem}>
-      <Text style={styles.homeText}>{item.title}</Text>
+      <Text style={styles.homeText}>{'Workout ID: ' + workout.id}</Text>
+      <Text style={styles.homeText}>{'Workout Name: ' + workout.name}</Text>
+      <Text style={styles.homeText}>{'Workout Date: ' + workout.date}</Text>
+      <Text style={styles.homeText}>{'Workout Duration: ' + workout.duration}</Text>
     </View>
   </Pressable>
 );
@@ -70,8 +70,9 @@ const styles = StyleSheet.create({
   },
   workoutItem: {
     backgroundColor: '#1abf',
-    height: 50,
-    width: 200,
-
+    height: 150,
+    width: 350,
+    borderStyle: 'solid',
+    borderWidth: 5
   }
 });
