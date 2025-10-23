@@ -1,12 +1,26 @@
 import * as SQLite from 'expo-sqlite';
 
+export enum TrackingMetric {
+  DISTANCE = 'distance',
+  DISTANCE_TIME = 'distance_time',
+  DISTANCE_WEIGHT = 'distance_weight',
+  DURATION = 'duration',
+  DURATION_CALORIES = 'duration_calories',
+  DURATION_WEIGHT = 'duration_weight',
+  REPS = 'reps',
+  REPS_WEIGHT = 'reps_weight',
+  TIME = 'time',
+};
+
 export type Exercise = {
   id: number;
   name: string;
+  trackingMetric: TrackingMetric;
 };
 
 export type ExerciseShell = {
   name: string;
+  trackingMetric: TrackingMetric;
 };
 
 export type Workout = {
@@ -14,15 +28,31 @@ export type Workout = {
   name: string;
   date: string;
   duration: number | null;
-}
+};
 
 export type WorkoutShell = {
   name: string;
   date: string;
   duration: number | null;
-}
+};
+
+export type Set = {
+  id: number;
+  workoutId: number; // foreign key
+  exerciseId: number; // foreign key
+  Weight: number;
+  Reps: number;
+};
+
 
 export const dbPromise = SQLite.openDatabaseAsync('database.db');
+
+export async function clearDatabase() {
+  const db = await dbPromise;
+  db.execAsync('DROP TABLE IF EXISTS exercises');
+  db.execAsync('DROP TABLE IF EXISTS workouts');
+  console.log('They have been deleted');
+}
 
 export async function setupDB() {
   const db = await dbPromise;
@@ -31,29 +61,32 @@ export async function setupDB() {
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS exercises (
         id INTEGER PRIMARY KEY NOT NULL,
-        name TEXT NOT NULL UNIQUE
+        name TEXT NOT NULL UNIQUE,
+        tracking_metric TEXT NOT NULL
       );
     `);
 
-    const insertStatements = [
-      'Back Squat',
-      'Benchpress',
-      'Deadlift',
-      'Overhead Press',
-      'Front Squat',
-      'Bicep Curl',
-      'Lateral Raise',
-      'Leg Extension',
-      'Calf Raise',
-      'Leg Raise',
-      'Lying Leg Raise',
-      'Bulgarian Split Squat'
+    const insertStatements: ExerciseShell[] = [
+      {name: 'Back Squat', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Benchpress', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Deadlift', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Overhead Press', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Pushup', trackingMetric: TrackingMetric.REPS},
+      {name: 'Front Squat', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Bicep Curl', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Lateral Raise', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Leg Extension', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Calf Raise', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Leg Raise', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Lying Leg Raise', trackingMetric: TrackingMetric.REPS},
+      {name: 'Bulgarian Split Squat', trackingMetric: TrackingMetric.REPS_WEIGHT},
+      {name: 'Assault Bike', trackingMetric: TrackingMetric.DURATION_CALORIES},
     ];
 
-    for (const name of insertStatements) {
+    for (const exercise of insertStatements) {
       await db.runAsync(
-        'INSERT OR IGNORE INTO exercises (name) VALUES (?);',
-        name
+        'INSERT OR IGNORE INTO exercises (name, tracking_metric) VALUES (?, ?);',
+        exercise.name, exercise.trackingMetric
       );
     }
   });
@@ -67,27 +100,33 @@ export async function setupDB() {
         duration INTEGER
       );
     `)
-    const workouts = [
-      { name: 'Upper 6', date: '2025-10-10 00:00:00.000' },
-      { name: 'Lower 6', date: '2025-10-09 00:00:00.000' },
-      { name: 'Upper 5', date: '2025-10-08 00:00:00.000' },
-      { name: 'Lower 5', date: '2025-10-07 00:00:00.000' },
-      { name: 'Upper 4', date: '2025-10-06 00:00:00.000' },
-      { name: 'Lower 4', date: '2025-10-04 00:00:00.000' },
-      { name: 'Upper 3', date: '2025-10-03 00:00:00.000' },
-      { name: 'Lower 3', date: '2025-10-02 00:00:00.000' },
-      { name: 'Upper 2', date: '2025-10-01 00:00:00.000' },
-      { name: 'Lower 2', date: '2025-09-30 00:00:00.000' },
-      { name: 'Upper 1', date: '2025-09-27 00:00:00.000' },
-      { name: 'Lower 1', date: '2025-09-25 00:00:00.000' }
-    ]
 
-    for (const workout of workouts) {
-      await db.runAsync(
-        'INSERT OR IGNORE INTO workouts (name, date) VALUES (?, ?);',
-        workout.name, workout.date
-      );
+    const check = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM workouts');
+
+    if (check?.count === 0) {
+      const workouts = [
+        { name: 'Upper 6', date: '2025-10-10 00:00:00.000' },
+        { name: 'Lower 6', date: '2025-10-09 00:00:00.000' },
+        { name: 'Upper 5', date: '2025-10-08 00:00:00.000' },
+        { name: 'Lower 5', date: '2025-10-07 00:00:00.000' },
+        { name: 'Upper 4', date: '2025-10-06 00:00:00.000' },
+        { name: 'Lower 4', date: '2025-10-04 00:00:00.000' },
+        { name: 'Upper 3', date: '2025-10-03 00:00:00.000' },
+        { name: 'Lower 3', date: '2025-10-02 00:00:00.000' },
+        { name: 'Upper 2', date: '2025-10-01 00:00:00.000' },
+        { name: 'Lower 2', date: '2025-09-30 00:00:00.000' },
+        { name: 'Upper 1', date: '2025-09-27 00:00:00.000' },
+        { name: 'Lower 1', date: '2025-09-25 00:00:00.000' }
+      ]
+
+      for (const workout of workouts) {
+        await db.runAsync(
+          'INSERT OR IGNORE INTO workouts (name, date) VALUES (?, ?);',
+          workout.name, workout.date
+        );
+      }
     }
+
   });
 }
 
@@ -106,10 +145,10 @@ export async function addExercise(exercise: ExerciseShell): Promise<Exercise> {
     if (result) {
       return result;
     }
-    return { id: -1, name: "yeah, that ain't right" }
+    return { id: -1, name: "yeah, that ain't right", trackingMetric: TrackingMetric.DURATION_WEIGHT }
   } catch (error) {
     console.error('There has been an error adding');
-    return { id: -1, name: "yeah, that ain't right" }
+    return { id: -1, name: "yeah, that ain't right", trackingMetric: TrackingMetric.DURATION_WEIGHT }
   }
 }
 

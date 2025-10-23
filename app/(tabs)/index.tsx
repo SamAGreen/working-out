@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWorkouts } from '../hooks/useWorkouts';
 import { addWorkout, Workout, WorkoutShell } from '../db/database';
@@ -69,6 +69,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   calendarText: {
+    fontFamily: Platform.select({
+      android: 'Orbitron_700Bold',
+      ios: 'Orbitron',
+    }),
     color: '#000',
     fontSize: 18,
     fontWeight: '600',

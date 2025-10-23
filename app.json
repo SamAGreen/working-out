@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.workingout"
     },
     "web": {
       "output": "static",
@@ -38,6 +39,16 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+      "expo-font",
+      {
+        "fonts": [
+          "node_modules/@expo-google-fonts/michroma/400Regular/Michroma_400Regular.ttf",
+          "node_modules/@expo-google-fonts/orbitron/400Regular/Orbitron_400Regular.ttf",
+          "node_modules/@expo-google-fonts/orbitron/700Bold/Orbitron_700Bold.ttf"
+        ]
+      }
       ]
     ],
     "experiments": {

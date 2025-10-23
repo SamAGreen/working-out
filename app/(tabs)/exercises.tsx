@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AddItemModal from '../components/AddItemModal';
-import { addExercise, deleteExercise, Exercise, ExerciseShell } from '../db/database';
+import { addExercise, deleteExercise, Exercise, ExerciseShell, TrackingMetric } from '../db/database';
 import { useAddLocation } from '../hooks/useAddStore';
 import { useExercises } from '../hooks/useExercises';
 
@@ -25,8 +25,11 @@ export default function ExercisesScreen() {
   }
 
   const createExerciseShell = (name: string): ExerciseShell => {
-    return {name: name};
+    return {
+  name: name, trackingMetric: TrackingMetric.REPS_WEIGHT
+};
   }
+  
 
   const Item = ({ exercise }: { exercise: Exercise }) => (
     <Pressable onLongPress={() => handleDelete(exercise)}>
