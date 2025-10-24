@@ -6,6 +6,7 @@ import { addWorkout, Workout, WorkoutShell } from '../db/database';
 import AddItemModal from '../components/AddItemModal';
 import { useAddLocation } from '../hooks/useAddStore';
 import { getCurrentTimestamp } from '../util/time';
+import { Image } from 'expo-image';
 
 export default function Index() {
   const {allWorkouts, addWorkoutToList} = useWorkouts()
@@ -22,10 +23,12 @@ export default function Index() {
 }
   }
 
+  const image = require('@/assets/images/thedon.jpg');
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
-        <Text style={styles.calendarText}>Calendar</Text>
+        <Image source={image}/>
       </View>
       <View style={styles.listContainer}>
         <FlatList showsVerticalScrollIndicator={false} data={allWorkouts} renderItem={({ item }) => <WorkoutItem workout={item}  />} />
