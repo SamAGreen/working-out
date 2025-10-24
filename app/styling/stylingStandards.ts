@@ -7,6 +7,7 @@ const Colors = {
     background_50: '#E5F9FF',
     background_100: '#CCF2FF',
     background_500: '#00BFFF',
+    background_800: '#004D66',
     error: '#BF0603',
     text: '#1B1204',
     text_800: '#593C0D',
@@ -25,6 +26,8 @@ const FontSizes = {
   medium: 16,
   large: 20,
   xl: 24,
+  xxl: 28,
+  xxxl: 32,
 };
 
 const Radius = {
@@ -33,9 +36,18 @@ const Radius = {
   lg: 16,
 };
 
-export default {
+const FontWeights = {
+  regular: '400',
+  medium: '500',
+  bold: '700',
+}
+
+export const theme = {
   Colors,
   Spacing,
   FontSizes,
   Radius,
+  FontWeights
 };
+
+export type Theme = typeof theme;

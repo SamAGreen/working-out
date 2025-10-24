@@ -15,7 +15,7 @@ export default function TabLayout() {
                     borderTopWidth: 0
 
                 },
-                headerShown: false
+                headerShown: false,
             }}
         >
 

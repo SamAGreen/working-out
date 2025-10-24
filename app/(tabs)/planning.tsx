@@ -1,18 +1,18 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+import ScreenWrapper from '../components/ScreenWrapper';
+import CustomText from '../components/CustomText';
 
 export default function PlanningScreen() {
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Planning</Text>
-    </SafeAreaView>
+    <ScreenWrapper style={styles.container}>
+      <CustomText style={styles.text}>Planning</CustomText>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -1,15 +1,17 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { FlatList, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useWorkouts } from '../hooks/useWorkouts';
-import { addWorkout, Workout, WorkoutShell } from '../db/database';
 import AddItemModal from '../components/AddItemModal';
+import ScreenWrapper from '../components/ScreenWrapper';
+import WorkoutListItem from '../components/WorkoutListItem';
+import { addWorkout, Workout, WorkoutShell } from '../db/database';
 import { useAddLocation } from '../hooks/useAddStore';
+import { useWorkouts } from '../hooks/useWorkouts';
+import { theme } from '../styling/stylingStandards';
 import { getCurrentTimestamp } from '../util/time';
-import { Image } from 'expo-image';
 
 export default function Index() {
-  const {allWorkouts, addWorkoutToList} = useWorkouts()
+  const { allWorkouts, addWorkoutToList } = useWorkouts()
 
   const localLocation = 'home';
   const plusLocation = useAddLocation((state) => state.plusLocation);
@@ -17,34 +19,35 @@ export default function Index() {
 
   const createWorkoutShell = (name: string): WorkoutShell => {
     return {
-    name: name,
-    date: getCurrentTimestamp(),
-   duration: null
-}
+      name: name,
+      date: getCurrentTimestamp(),
+      duration: null
+    }
   }
 
-  const image = require('@/assets/images/thedon.jpg');
+  const image = require('../../assets/images/thedon.jpg');
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScreenWrapper style={styles.container}>
       <View style={styles.calendarContainer}>
-        <Image source={image}/>
+        <Image source={image} contentFit='cover' style={styles.calendarContainer} />
       </View>
       <View style={styles.listContainer}>
-        <FlatList showsVerticalScrollIndicator={false} data={allWorkouts} renderItem={({ item }) => <WorkoutItem workout={item}  />} />
+        <FlatList showsVerticalScrollIndicator={false} data={allWorkouts} renderItem={({ item }) => <WorkoutListItem workout={item} />} style={styles.list}
+          ItemSeparatorComponent={() => <View style={{ height: theme.Spacing.xs }} />} />
       </View>
-      <AddItemModal visible={plusLocation===localLocation} onClose={resetAddLocation} onAdd={addWorkout} onAddToList={addWorkoutToList} createShell={createWorkoutShell} />
-    </SafeAreaView>
+      <AddItemModal visible={plusLocation === localLocation} onClose={resetAddLocation} onAdd={addWorkout} onAddToList={addWorkoutToList} createShell={createWorkoutShell} />
+    </ScreenWrapper>
   );
 }
 
-const WorkoutItem = ({workout}: {workout: Workout}) => (
+const WorkoutItem = ({ workout }: { workout: Workout }) => (
   <Pressable onPress={() =>
-          router.navigate({
-            pathname: '/workouts/[workout]',
-            params: { workout: workout.id }
-          })
-        }>
+    router.navigate({
+      pathname: '/workouts/[workout]',
+      params: { workout: workout.id }
+    })
+  }>
     <View style={styles.workoutItem}>
       <Text style={styles.homeText}>{'Workout ID: ' + workout.id}</Text>
       <Text style={styles.homeText}>{'Workout Name: ' + workout.name}</Text>
@@ -57,8 +60,6 @@ const WorkoutItem = ({workout}: {workout: Workout}) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
-    padding: 8,
     justifyContent: 'center',
     alignItems: 'center',
     gap: 12
@@ -85,17 +86,18 @@ const styles = StyleSheet.create({
     flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2f3a',
     borderRadius: 8,
   },
   homeText: {
     color: '#fff',
     fontSize: 18,
   },
+  list: {
+    width: '100%',
+  },
   workoutItem: {
     backgroundColor: '#1abf',
-    height: 150,
-    width: 350,
+    width: '100%',
     borderStyle: 'solid',
     borderWidth: 5
   }

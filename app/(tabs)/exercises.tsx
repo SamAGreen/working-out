@@ -1,7 +1,9 @@
 import React from 'react';
-import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import AddItemModal from '../components/AddItemModal';
+import ExerciseListItem from '../components/ExerciseListItem';
+import ScreenWrapper from '../components/ScreenWrapper';
+import SearchBar from '../components/SearchBar';
 import { addExercise, deleteExercise, Exercise, ExerciseShell, TrackingMetric } from '../db/database';
 import { useAddLocation } from '../hooks/useAddStore';
 import { useExercises } from '../hooks/useExercises';
@@ -26,10 +28,10 @@ export default function ExercisesScreen() {
 
   const createExerciseShell = (name: string): ExerciseShell => {
     return {
-  name: name, trackingMetric: TrackingMetric.REPS_WEIGHT
-};
+      name: name, trackingMetric: TrackingMetric.REPS_WEIGHT
+    };
   }
-  
+
 
   const Item = ({ exercise }: { exercise: Exercise }) => (
     <Pressable onLongPress={() => handleDelete(exercise)}>
@@ -40,28 +42,27 @@ export default function ExercisesScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TextInput
-        placeholder="Search here..."
+    <ScreenWrapper style={styles.container}>
+      <SearchBar
         value={searchValue}
         onChangeText={handleSearch}
-        style={styles.input}
+        onClear={() => handleSearch('')}
+        placeholder="Search exercises..."
       />
       <FlatList
         data={filteredExercises}
-        renderItem={({ item }) => <Item exercise={item} />}
+        renderItem={({ item }) => <ExerciseListItem exercise={item} onDelete={handleDelete} />}
         keyExtractor={(item) => item.id.toString()}
         style={styles.list}
       />
       <AddItemModal visible={plusLocation === localLocation} onClose={resetAddLocation} onAdd={addExercise} onAddToList={addExerciseToList} createShell={createExerciseShell} />
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
     justifyContent: 'center',
     alignItems: 'center',
     width: "100%"
