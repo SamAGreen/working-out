@@ -1,10 +1,9 @@
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
-import { FlatList, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import AddItemModal from '../components/AddItemModal';
 import ScreenWrapper from '../components/ScreenWrapper';
 import WorkoutListItem from '../components/WorkoutListItem';
-import { addWorkout, Workout, WorkoutShell } from '../db/database';
+import { addWorkout, WorkoutShell } from '../db/database';
 import { useAddLocation } from '../hooks/useAddStore';
 import { useWorkouts } from '../hooks/useWorkouts';
 import { theme } from '../styling/stylingStandards';
@@ -41,64 +40,28 @@ export default function Index() {
   );
 }
 
-const WorkoutItem = ({ workout }: { workout: Workout }) => (
-  <Pressable onPress={() =>
-    router.navigate({
-      pathname: '/workouts/[workout]',
-      params: { workout: workout.id }
-    })
-  }>
-    <View style={styles.workoutItem}>
-      <Text style={styles.homeText}>{'Workout ID: ' + workout.id}</Text>
-      <Text style={styles.homeText}>{'Workout Name: ' + workout.name}</Text>
-      <Text style={styles.homeText}>{'Workout Date: ' + workout.date}</Text>
-      <Text style={styles.homeText}>{'Workout Duration: ' + workout.duration}</Text>
-    </View>
-  </Pressable>
-);
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 12
+    gap: theme.Spacing.md
   },
   calendarContainer: {
     width: '100%',
     flex: 2,
-    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-  },
-  calendarText: {
-    fontFamily: Platform.select({
-      android: 'Orbitron_700Bold',
-      ios: 'Orbitron',
-    }),
-    color: '#000',
-    fontSize: 18,
-    fontWeight: '600',
+    borderRadius: theme.Radius.md,
   },
   listContainer: {
     width: '100%',
     flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-  },
-  homeText: {
-    color: '#fff',
-    fontSize: 18,
+    borderRadius: theme.Radius.md,
   },
   list: {
     width: '100%',
   },
-  workoutItem: {
-    backgroundColor: '#1abf',
-    width: '100%',
-    borderStyle: 'solid',
-    borderWidth: 5
-  }
 });
