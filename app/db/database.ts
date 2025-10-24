@@ -67,20 +67,20 @@ export async function setupDB() {
     `);
 
     const insertStatements: ExerciseShell[] = [
-      {name: 'Back Squat', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Benchpress', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Deadlift', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Overhead Press', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Pushup', trackingMetric: TrackingMetric.REPS},
-      {name: 'Front Squat', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Bicep Curl', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Lateral Raise', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Leg Extension', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Calf Raise', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Leg Raise', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Lying Leg Raise', trackingMetric: TrackingMetric.REPS},
-      {name: 'Bulgarian Split Squat', trackingMetric: TrackingMetric.REPS_WEIGHT},
-      {name: 'Assault Bike', trackingMetric: TrackingMetric.DURATION_CALORIES},
+      { name: 'Back Squat', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Benchpress', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Deadlift', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Overhead Press', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Pushup', trackingMetric: TrackingMetric.REPS },
+      { name: 'Front Squat', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Bicep Curl', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Lateral Raise', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Leg Extension', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Calf Raise', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Leg Raise', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Lying Leg Raise', trackingMetric: TrackingMetric.REPS },
+      { name: 'Bulgarian Split Squat', trackingMetric: TrackingMetric.REPS_WEIGHT },
+      { name: 'Assault Bike', trackingMetric: TrackingMetric.DURATION_CALORIES },
     ];
 
     for (const exercise of insertStatements) {
@@ -138,7 +138,7 @@ export async function getExercises(): Promise<Exercise[]> {
 export async function addExercise(exercise: ExerciseShell): Promise<Exercise> {
   const db = await dbPromise;
   try {
-    const insertResult = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', exercise.name);
+    const insertResult = await db.runAsync('INSERT INTO exercises (name, tracking_metric) VALUES (?, ?)', exercise.name, exercise.trackingMetric);
 
     const result = await db.getFirstAsync<Exercise>('SELECT * FROM exercises WHERE id = ?', insertResult.lastInsertRowId);
 
@@ -147,7 +147,7 @@ export async function addExercise(exercise: ExerciseShell): Promise<Exercise> {
     }
     return { id: -1, name: "yeah, that ain't right", trackingMetric: TrackingMetric.DURATION_WEIGHT }
   } catch (error) {
-    console.error('There has been an error adding');
+    console.error('There has been an error adding:', error);
     return { id: -1, name: "yeah, that ain't right", trackingMetric: TrackingMetric.DURATION_WEIGHT }
   }
 }
@@ -164,8 +164,8 @@ export async function deleteExercise(exerciseId: number): Promise<boolean> {
       return false;
     }
 
-  } catch {
-    console.error("Delete fucked up");
+  } catch (error) {
+    console.error("Delete fucked up: ", error);
     return false;
   }
 }
@@ -188,7 +188,7 @@ export async function addWorkout(workout: WorkoutShell): Promise<Workout> {
 
     return { id: -1, name: "yeah, that ain't right", date: "1970-01-01 00:00:00.000", duration: null }
   } catch (error) {
-    console.error('There has been an error adding a workout');
+    console.error('There has been an error adding a workout:', error);
     return { id: -1, name: "yeah, that ain't right", date: "1970-01-01 00:00:00.000", duration: null }
   }
 }
@@ -205,8 +205,8 @@ export async function deleteWorkout(workoutId: number): Promise<boolean> {
       return false;
     }
 
-  } catch {
-    console.error("Workout Delete fucked uo");
+  } catch (error) {
+    console.error("Workout Delete fucked up:", error);
     return false;
   }
 } 

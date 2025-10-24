@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, StyleSheet } from 'react-native';
 import AddItemModal from '../components/AddItemModal';
 import ExerciseListItem from '../components/ExerciseListItem';
 import ScreenWrapper from '../components/ScreenWrapper';
@@ -31,15 +31,6 @@ export default function ExercisesScreen() {
       name: name, trackingMetric: TrackingMetric.REPS_WEIGHT
     };
   }
-
-
-  const Item = ({ exercise }: { exercise: Exercise }) => (
-    <Pressable onLongPress={() => handleDelete(exercise)}>
-      <View style={styles.item}>
-        <Text style={styles.itemText}>{exercise.name}</Text>
-      </View>
-    </Pressable>
-  );
 
   return (
     <ScreenWrapper style={styles.container}>
