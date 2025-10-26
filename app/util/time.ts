@@ -4,7 +4,7 @@ export function getCurrentTimestamp(): string {
   const pad = (n: number, width = 2) => String(n).padStart(width, '0');
 
   const year = now.getFullYear();
-  const month = pad(now.getMonth() + 1); // months are 0-indexed
+  const month = pad(now.getMonth() + 1); 
   const day = pad(now.getDate());
   const hours = pad(now.getHours());
   const minutes = pad(now.getMinutes());

@@ -1,4 +1,3 @@
-// components/CustomTextInput.tsx
 import React from 'react';
 import { TextInput, TextInputProps, TextStyle } from 'react-native';
 import { fontFamilyMap, theme } from '../styling/stylingStandards';

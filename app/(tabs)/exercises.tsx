@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { AddExerciseItem } from '../components/AddExerciseItem';
 import ExerciseListItem from '../components/ExerciseListItem';
 import ScreenWrapper from '../components/ScreenWrapper';
@@ -36,7 +36,7 @@ export default function ExercisesScreen() {
     }))
   );
 
-  // Reset "add mode" when leaving the screen
+
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -49,7 +49,6 @@ export default function ExercisesScreen() {
     deleteExercise(exercise.id).then((success) => {
       if (success) {
         removeExerciseFromList(exercise);
-        Alert.alert(exercise.name + ' DELETED');
       } else {
         console.log('Something went wrong handling delete');
       }
@@ -108,6 +107,8 @@ export default function ExercisesScreen() {
         )}
         keyExtractor={(item) => item.id.toString()}
         style={styles.list}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={{ height: theme.Spacing.xs }} />}
       />
     </ScreenWrapper>
   );

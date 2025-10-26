@@ -1,4 +1,3 @@
-// components/AppText.tsx
 import React, { ReactNode } from 'react';
 import { Text, TextProps, TextStyle } from 'react-native';
 import { fontFamilyMap, theme } from '../styling/stylingStandards';

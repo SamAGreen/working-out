@@ -1,4 +1,3 @@
-// --- AddExerciseItem.tsx ---
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -39,7 +38,7 @@ export const AddExerciseItem = ({
           setItems={setItems}
           style={styles.dropDownPicker}
           dropDownContainerStyle={{
-            backgroundColor: theme.Colors.primary_100,
+            backgroundColor: theme.Colors.background,
             zIndex: 3000,
           }}
           listMode="SCROLLVIEW"
