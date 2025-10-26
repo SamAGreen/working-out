@@ -12,6 +12,29 @@ export enum TrackingMetric {
   TIME = 'time',
 };
 
+export function MetricToNiceString(metric: TrackingMetric): string {
+  switch (metric) {
+    case TrackingMetric.DISTANCE:
+      return 'Distance';
+    case TrackingMetric.DISTANCE_TIME:
+      return 'Distance/Time';
+    case TrackingMetric.DISTANCE_WEIGHT:
+      return 'Weight/Distance';
+    case TrackingMetric.DURATION:
+      return 'Duration';
+    case TrackingMetric.DURATION_CALORIES:
+      return 'Duration/Calories';
+    case TrackingMetric.DURATION_WEIGHT:
+      return 'Weight/Duration';
+    case TrackingMetric.REPS:
+      return 'Reps';
+    case TrackingMetric.REPS_WEIGHT:
+      return 'Weight/Reps';
+    case TrackingMetric.TIME:
+      return 'Time';
+  }
+}
+
 export type Exercise = {
   id: number;
   name: string;
@@ -132,25 +155,55 @@ export async function setupDB() {
 
 export async function getExercises(): Promise<Exercise[]> {
   const db = await dbPromise;
-  return db.getAllAsync<Exercise>('SELECT * FROM exercises');
+  const rows = await db.getAllAsync<{ id: number; name: string; tracking_metric: string }>(
+    'SELECT * FROM exercises'
+  );
+
+  return rows.map(row => ({
+    id: row.id,
+    name: row.name,
+    trackingMetric: row.tracking_metric as TrackingMetric, // map to camelCase
+  }));
 }
+
 
 export async function addExercise(exercise: ExerciseShell): Promise<Exercise> {
   const db = await dbPromise;
   try {
-    const insertResult = await db.runAsync('INSERT INTO exercises (name, tracking_metric) VALUES (?, ?)', exercise.name, exercise.trackingMetric);
+    const insertResult = await db.runAsync(
+      'INSERT INTO exercises (name, tracking_metric) VALUES (?, ?)',
+      exercise.name,
+      exercise.trackingMetric
+    );
 
-    const result = await db.getFirstAsync<Exercise>('SELECT * FROM exercises WHERE id = ?', insertResult.lastInsertRowId);
+    const row = await db.getFirstAsync<{ id: number; name: string; tracking_metric: string }>(
+      'SELECT * FROM exercises WHERE id = ?',
+      insertResult.lastInsertRowId
+    );
 
-    if (result) {
-      return result;
+    if (row) {
+      return {
+        id: row.id,
+        name: row.name,
+        trackingMetric: row.tracking_metric as TrackingMetric,
+      };
     }
-    return { id: -1, name: "yeah, that ain't right", trackingMetric: TrackingMetric.DURATION_WEIGHT }
+
+    return {
+      id: -1,
+      name: "yeah, that ain't right",
+      trackingMetric: TrackingMetric.DURATION_WEIGHT,
+    };
   } catch (error) {
     console.error('There has been an error adding:', error);
-    return { id: -1, name: "yeah, that ain't right", trackingMetric: TrackingMetric.DURATION_WEIGHT }
+    return {
+      id: -1,
+      name: "yeah, that ain't right",
+      trackingMetric: TrackingMetric.DURATION_WEIGHT,
+    };
   }
 }
+
 
 export async function deleteExercise(exerciseId: number): Promise<boolean> {
   const db = await dbPromise;

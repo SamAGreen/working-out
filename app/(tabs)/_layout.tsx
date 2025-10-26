@@ -6,7 +6,7 @@ import { PlusButton } from './dummy';
 
 export default function TabLayout() {
     return (
-
+        
         <Tabs
             screenOptions={{
                 tabBarActiveTintColor: '#ffd33d',

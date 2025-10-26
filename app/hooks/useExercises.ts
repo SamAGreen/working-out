@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getExercises, Exercise } from '../db/database';
+import { Exercise, getExercises } from '../db/database';
 
 export function useExercises() {
   const [allExercises, setAllExercises] = useState<Exercise[]>([]);
@@ -16,7 +16,7 @@ export function useExercises() {
   };
 
   const addExerciseToList = (exercise: Exercise) => {
-    setAllExercises((prev) => [...prev, exercise]);
+    setAllExercises((prev) => [exercise, ...prev]);
   };
 
   const removeExerciseFromList = (exercise: Exercise) => {

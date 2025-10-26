@@ -1,7 +1,8 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { theme } from '../styling/stylingStandards';
+import CustomTextInput from './CustomTextInput';
 
 interface SearchBarProps {
     value: string;
@@ -18,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
     return (
         <View style={styles.container}>
-            <TextInput
+            <CustomTextInput
                 style={styles.input}
                 placeholder={placeholder}
                 placeholderTextColor={theme.Colors.text_800}
@@ -57,8 +58,6 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: theme.FontSizes.medium,
-        color: theme.Colors.text,
     },
     clearButton: {
         marginLeft: theme.Spacing.xs,
