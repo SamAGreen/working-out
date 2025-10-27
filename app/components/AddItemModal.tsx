@@ -1,12 +1,12 @@
+import { useState } from "react";
 import {
   Modal,
   Pressable,
+  StyleSheet,
+  Text,
   TextInput,
   View,
-  Text,
-  StyleSheet,
 } from "react-native";
-import { useState } from "react";
 
 export interface AddItemModalProps<T, U> {
   visible: boolean;

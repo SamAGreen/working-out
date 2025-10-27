@@ -32,7 +32,7 @@ export default function RootLayout() {
     }
 
     prepare();
-  }, );
+  });
 
   useEffect(() => {
     if (appIsReady) {
