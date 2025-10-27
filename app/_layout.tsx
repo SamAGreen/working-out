@@ -3,19 +3,19 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { clearDatabase, setupDB } from "./db/database";
+import { setupDB } from "./db/database";
 
-/* For Database Debugging
-import * as SQLite from 'expo-sqlite';
+/* For Database Debugging */
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabaseSync("database.db");
-*/
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
-  //useDrizzleStudio(db);
+
+  useDrizzleStudio(db);
 
   useEffect(() => {
     async function prepare() {
@@ -23,6 +23,7 @@ export default function RootLayout() {
         console.log("Setting up DB...");
         //await clearDatabase();
         await setupDB();
+
         console.log("DB setup complete.");
       } catch (error) {
         console.error("Error setting up DB:", error);
@@ -32,11 +33,13 @@ export default function RootLayout() {
     }
 
     prepare();
-  });
+  }, []);
 
   useEffect(() => {
     if (appIsReady) {
-      SplashScreen.hideAsync();
+      (async () => {
+        await SplashScreen.hideAsync();
+      })();
     }
   }, [appIsReady]);
 

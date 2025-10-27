@@ -28,7 +28,7 @@ export async function getWorkout(id: string): Promise<Workout> {
       name: result.name,
       date: result.date,
       duration: result.duration,
-      finished: result.finished as boolean,
+      finished: result.finished ? true: false,
     };
   }
 
@@ -39,6 +39,13 @@ export async function getWorkout(id: string): Promise<Workout> {
     duration: null,
     finished: true,
   };
+}
+
+export async function setWorkoutFinished(id: string, finished: boolean): Promise<number> {
+  const db = await dbPromise;
+  const editResult = await db.runAsync("UPDATE workouts SET finished = ? WHERE id = ?",finished ? 1 :0, id);
+  console.log(`Changed ${id} to ${finished} resulting in ${editResult.changes}`);
+  return editResult.changes;
 }
 
 export async function getAllWorkouts(): Promise<Workout[]> {
