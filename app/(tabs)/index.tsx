@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import AddItemModal from "../components/AddItemModal";
 import ScreenWrapper from "../components/ScreenWrapper";
 import WorkoutListItem from "../components/WorkoutListItem";
-import { addWorkout, WorkoutShell } from "../db/database";
+import { addWorkout, WorkoutShell } from "../db/workoutDb";
 import { useAddLocation } from "../hooks/useAddStore";
 import { useWorkouts } from "../hooks/useWorkouts";
 import { theme } from "../styling/stylingStandards";

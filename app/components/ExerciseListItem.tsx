@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
-import { Exercise, MetricToNiceString } from "../db/database";
 import { theme } from "../styling/stylingStandards";
 import CustomText from "./CustomText";
+import { Exercise, MetricToNiceString } from "../db/exerciseDb";
 
 interface ExerciseListItemProps {
   exercise: Exercise;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Exercise, getExercises } from "../db/database";
+import { Exercise, getExercises } from "../db/exerciseDb";
 
 export function useExercises() {
   const [allExercises, setAllExercises] = useState<Exercise[]>([]);

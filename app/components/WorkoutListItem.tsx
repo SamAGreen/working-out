@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Workout } from "../db/database";
+import { Workout } from "../db/workoutDb";
 import { theme } from "../styling/stylingStandards";
 import { formatDate } from "../util/time";
 import CustomText from "./CustomText";

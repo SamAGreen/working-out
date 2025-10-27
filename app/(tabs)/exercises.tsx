@@ -6,13 +6,13 @@ import ExerciseListItem from "../components/ExerciseListItem";
 import ScreenWrapper from "../components/ScreenWrapper";
 import SearchBar from "../components/SearchBar";
 import {
-  addExercise,
-  deleteExercise,
   Exercise,
   ExerciseShell,
   MetricToNiceString,
   TrackingMetric,
-} from "../db/database";
+  addExercise,
+  deleteExercise,
+} from "../db/exerciseDb";
 import { useAddLocation } from "../hooks/useAddStore";
 import { useExercises } from "../hooks/useExercises";
 import { theme } from "../styling/stylingStandards";

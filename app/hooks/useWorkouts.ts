@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Workout, getAllWorkouts } from "../db/database";
+import { Workout, getAllWorkouts } from "../db/workoutDb";
 
 export function useWorkouts() {
   const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);

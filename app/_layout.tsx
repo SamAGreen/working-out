@@ -3,6 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { clearDatabase, setupDB } from "./db/database";
 
 /* For Database Debugging
 import * as SQLite from 'expo-sqlite';
@@ -20,6 +21,7 @@ export default function RootLayout() {
     async function prepare() {
       try {
         console.log("Setting up DB...");
+        await setupDB();
         console.log("DB setup complete.");
       } catch (error) {
         console.error("Error setting up DB:", error);
@@ -29,7 +31,7 @@ export default function RootLayout() {
     }
 
     prepare();
-  }, []);
+  }, );
 
   useEffect(() => {
     if (appIsReady) {
