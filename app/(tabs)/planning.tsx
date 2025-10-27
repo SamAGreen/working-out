@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
-import ScreenWrapper from '../components/ScreenWrapper';
-import CustomText from '../components/CustomText';
+import { StyleSheet } from "react-native";
+import ScreenWrapper from "../components/ScreenWrapper";
+import CustomText from "../components/CustomText";
 
 export default function PlanningScreen() {
   return (
@@ -13,10 +13,10 @@ export default function PlanningScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
-    color: '#fff',
+    color: "#fff",
   },
 });

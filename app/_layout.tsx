@@ -1,9 +1,8 @@
-
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 /* For Database Debugging
 import * as SQLite from 'expo-sqlite';
@@ -20,10 +19,10 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
-        console.log('Setting up DB...');
-        console.log('DB setup complete.');
+        console.log("Setting up DB...");
+        console.log("DB setup complete.");
       } catch (error) {
-        console.error('Error setting up DB:', error);
+        console.error("Error setting up DB:", error);
       } finally {
         setAppIsReady(true);
       }
@@ -38,16 +37,13 @@ export default function RootLayout() {
     }
   }, [appIsReady]);
 
-
   if (!appIsReady) {
-
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
       </View>
     );
   }
-
 
   return (
     <SafeAreaProvider>

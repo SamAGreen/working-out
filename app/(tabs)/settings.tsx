@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
-import CustomText from '../components/CustomText';
-import ScreenWrapper from '../components/ScreenWrapper';
+import { StyleSheet } from "react-native";
+import CustomText from "../components/CustomText";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 export default function SettingsScreen() {
   return (
@@ -13,10 +13,10 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
-    color: '#fff',
+    color: "#fff",
   },
 });

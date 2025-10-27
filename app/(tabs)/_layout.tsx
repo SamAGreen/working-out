@@ -1,75 +1,89 @@
-import { Tabs } from 'expo-router';
+import { Tabs } from "expo-router";
 
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { PlusButton } from './dummy';
-
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { PlusButton } from "./dummy";
 
 export default function TabLayout() {
-    return (
-        
-        <Tabs
-            screenOptions={{
-                tabBarActiveTintColor: '#ffd33d',
-                tabBarStyle: {
-                    backgroundColor: '#ffff',
-                    borderTopWidth: 0
-
-                },
-                headerShown: false,
-            }}
-        >
-
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: 'Home',
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
-                    ),
-                }}
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#ffd33d",
+        tabBarStyle: {
+          backgroundColor: "#ffff",
+          borderTopWidth: 0,
+        },
+        headerShown: false,
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home-sharp" : "home-outline"}
+              color={color}
+              size={24}
             />
+          ),
+        }}
+      />
 
-            <Tabs.Screen
-                name="planning"
-                options={{
-                    title: 'Planning',
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'pencil-sharp' : 'pencil-outline'} color={color} size={24} />
-                    ),
-                }}
+      <Tabs.Screen
+        name="planning"
+        options={{
+          title: "Planning",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "pencil-sharp" : "pencil-outline"}
+              color={color}
+              size={24}
             />
+          ),
+        }}
+      />
 
-            <Tabs.Screen
-                name="dummy"
-                options={{
-                    title: 'Dummy',
-                    tabBarButton: PlusButton
-                }}
-            />
+      <Tabs.Screen
+        name="dummy"
+        options={{
+          title: "Dummy",
+          tabBarButton: PlusButton,
+        }}
+      />
 
-            <Tabs.Screen name="exercises"
-                options={{
-                    title: 'Exercises',
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'barbell-sharp' : 'barbell-outline'} color={color} size={24} />
-                    )
-                }} />
+      <Tabs.Screen
+        name="exercises"
+        options={{
+          title: "Exercises",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "barbell-sharp" : "barbell-outline"}
+              color={color}
+              size={24}
+            />
+          ),
+        }}
+      />
 
-            <Tabs.Screen
-                name="settings"
-                options={{
-                    title: 'Settings',
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons name={focused ? 'settings-sharp' : 'settings-outline'} color={color} size={24} />
-                    ),
-                }}
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "settings-sharp" : "settings-outline"}
+              color={color}
+              size={24}
             />
-            <Tabs.Screen
-                name="workouts/[workout]"
-                options={{
-                    href: null,
-                }}
-            />
-        </Tabs>
-    );
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="workouts/[workout]"
+        options={{
+          href: null,
+        }}
+      />
+    </Tabs>
+  );
 }

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Workout, getAllWorkouts } from '../db/database';
+import { useEffect, useState } from "react";
+import { Workout, getAllWorkouts } from "../db/database";
 
 export function useWorkouts() {
   const [allWorkouts, setAllWorkouts] = useState<Workout[]>([]);
@@ -7,7 +7,7 @@ export function useWorkouts() {
   useEffect(() => {
     getAllWorkouts()
       .then((rows) => setAllWorkouts(rows))
-      .catch((err) => console.error('Failed to load workouts:', err));
+      .catch((err) => console.error("Failed to load workouts:", err));
   }, []);
 
   const addWorkoutToList = (workout: Workout) => {
@@ -16,6 +16,6 @@ export function useWorkouts() {
 
   return {
     allWorkouts,
-    addWorkoutToList
+    addWorkoutToList,
   };
 }

@@ -1,10 +1,10 @@
-import { useFocusEffect } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { AddExerciseItem } from '../components/AddExerciseItem';
-import ExerciseListItem from '../components/ExerciseListItem';
-import ScreenWrapper from '../components/ScreenWrapper';
-import SearchBar from '../components/SearchBar';
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
+import { AddExerciseItem } from "../components/AddExerciseItem";
+import ExerciseListItem from "../components/ExerciseListItem";
+import ScreenWrapper from "../components/ScreenWrapper";
+import SearchBar from "../components/SearchBar";
 import {
   addExercise,
   deleteExercise,
@@ -12,37 +12,43 @@ import {
   ExerciseShell,
   MetricToNiceString,
   TrackingMetric,
-} from '../db/database';
-import { useAddLocation } from '../hooks/useAddStore';
-import { useExercises } from '../hooks/useExercises';
-import { theme } from '../styling/stylingStandards';
+} from "../db/database";
+import { useAddLocation } from "../hooks/useAddStore";
+import { useExercises } from "../hooks/useExercises";
+import { theme } from "../styling/stylingStandards";
 
 export default function ExercisesScreen() {
-  const { filteredExercises, searchValue, handleSearch, addExerciseToList, removeExerciseFromList } =
-    useExercises();
+  const {
+    filteredExercises,
+    searchValue,
+    handleSearch,
+    addExerciseToList,
+    removeExerciseFromList,
+  } = useExercises();
 
   const plusLocation = useAddLocation((state) => state.plusLocation);
   const resetAddLocation = useAddLocation((state) => state.resetAddLocation);
-  const localLocation = 'exercises';
+  const localLocation = "exercises";
 
-  const [newExerciseName, setNewExerciseName] = useState('');
+  const [newExerciseName, setNewExerciseName] = useState("");
   const [open, setOpen] = useState(false);
-  const [selectedMetric, setSelectedMetric] = useState<TrackingMetric>(TrackingMetric.REPS_WEIGHT);
+  const [selectedMetric, setSelectedMetric] = useState<TrackingMetric>(
+    TrackingMetric.REPS_WEIGHT,
+  );
 
   const [items, setItems] = useState(
     Object.values(TrackingMetric).map((key) => ({
       label: MetricToNiceString(key),
       value: key,
-    }))
+    })),
   );
-
 
   useFocusEffect(
     useCallback(() => {
       return () => {
         resetAddLocation();
       };
-    }, [resetAddLocation])
+    }, [resetAddLocation]),
   );
 
   const handleDelete = (exercise: Exercise) => {
@@ -50,7 +56,7 @@ export default function ExercisesScreen() {
       if (success) {
         removeExerciseFromList(exercise);
       } else {
-        console.log('Something went wrong handling delete');
+        console.log("Something went wrong handling delete");
       }
     });
   };
@@ -58,7 +64,10 @@ export default function ExercisesScreen() {
   const handleAddNewExercise = async () => {
     if (!newExerciseName.trim()) return;
 
-    const shell: ExerciseShell = { name: newExerciseName, trackingMetric: selectedMetric };
+    const shell: ExerciseShell = {
+      name: newExerciseName,
+      trackingMetric: selectedMetric,
+    };
     try {
       const newExercise = await addExercise(shell);
       addExerciseToList({
@@ -66,15 +75,13 @@ export default function ExercisesScreen() {
         name: newExercise.name,
         trackingMetric: newExercise.trackingMetric,
       });
-      setNewExerciseName('');
+      setNewExerciseName("");
       setSelectedMetric(TrackingMetric.REPS_WEIGHT);
       resetAddLocation();
     } catch (error) {
-      console.error('Error adding exercise:', error);
+      console.error("Error adding exercise:", error);
     }
   };
-
-
 
   const listData = useMemo(() => filteredExercises, [filteredExercises]);
 
@@ -83,7 +90,7 @@ export default function ExercisesScreen() {
       <SearchBar
         value={searchValue}
         onChangeText={handleSearch}
-        onClear={() => handleSearch('')}
+        onClear={() => handleSearch("")}
         placeholder="Search exercises..."
       />
 
@@ -108,7 +115,9 @@ export default function ExercisesScreen() {
         keyExtractor={(item) => item.id.toString()}
         style={styles.list}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={{ height: theme.Spacing.xs }} />}
+        ItemSeparatorComponent={() => (
+          <View style={{ height: theme.Spacing.xs }} />
+        )}
       />
     </ScreenWrapper>
   );
@@ -117,10 +126,10 @@ export default function ExercisesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
+    width: "100%",
   },
   list: {
-    width: '100%',
+    width: "100%",
   },
   newItemContainer: {
     backgroundColor: theme.Colors.primary_100,
@@ -129,10 +138,10 @@ const styles = StyleSheet.create({
     marginBottom: theme.Spacing.sm,
     borderWidth: 1,
     borderColor: theme.Colors.accent_100,
-    width: '100%',
+    width: "100%",
   },
   inputContainer: {
-    width: '100%',
+    width: "100%",
   },
   input: {
     paddingHorizontal: 8,
@@ -141,22 +150,22 @@ const styles = StyleSheet.create({
     marginBottom: theme.Spacing.sm,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   },
   dropdownWrapper: {
     flex: 1,
     marginRight: theme.Spacing.sm,
-    maxWidth: '70%',
+    maxWidth: "70%",
   },
   dropDownPicker: {
     backgroundColor: theme.Colors.background,
   },
   addButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: theme.Colors.primary,
     borderRadius: theme.Radius.md,
     paddingHorizontal: theme.Spacing.lg,

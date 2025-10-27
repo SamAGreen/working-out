@@ -1,4 +1,11 @@
-import { Modal, Pressable, TextInput, View, Text, StyleSheet } from "react-native";
+import {
+  Modal,
+  Pressable,
+  TextInput,
+  View,
+  Text,
+  StyleSheet,
+} from "react-native";
 import { useState } from "react";
 
 export interface AddItemModalProps<T, U> {
@@ -11,7 +18,7 @@ export interface AddItemModalProps<T, U> {
   title?: string;
 }
 
-export default function AddItemModal<T,U>({
+export default function AddItemModal<T, U>({
   visible,
   onClose,
   onAdd,
@@ -19,8 +26,8 @@ export default function AddItemModal<T,U>({
   createShell,
   placeholder = "Add Item...",
   title = "Add Item",
-}: AddItemModalProps<T,U>) {
-  const [itemName, setItemName] = useState('');
+}: AddItemModalProps<T, U>) {
+  const [itemName, setItemName] = useState("");
 
   const handleAdd = () => {
     const trimmed = itemName.trim();
@@ -36,7 +43,7 @@ export default function AddItemModal<T,U>({
         console.error("AddItemModal Error:", err);
       });
 
-    setItemName('');
+    setItemName("");
     onClose();
   };
 
@@ -70,35 +77,35 @@ const styles = StyleSheet.create({
   modal: {
     width: 200,
     height: 200,
-    backgroundColor: '#f2ab',
+    backgroundColor: "#f2ab",
     top: "50%",
     left: "50%",
     transform: [{ translateX: -100 }, { translateY: -100 }],
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
   },
   modalText: {
     fontSize: 30,
-    color: '#cf2a'
+    color: "#cf2a",
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     margin: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   button: {
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     width: 100,
     height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginVertical: 5,
   },
   text: {
-    color: '#fff',
-  }
+    color: "#fff",
+  },
 });

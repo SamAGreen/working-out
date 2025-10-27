@@ -1,18 +1,19 @@
-
-
-import { useNavigationState } from '@react-navigation/native';
+import { useNavigationState } from "@react-navigation/native";
 import React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { useAddLocation } from "../hooks/useAddStore";
 
 export default function DummyScreen() {
-  return <></>
+  return <></>;
 }
 
 export const PlusButton = () => {
   const currentRouteName = useNavigationState(
-    (state) => state.routes[state.index].name
+    (state) => state.routes[state.index].name,
   );
 
   const setAddLocation = useAddLocation((state) => state.setAddLocation);
@@ -20,21 +21,21 @@ export const PlusButton = () => {
   const plusActive = useAddLocation((state) => state.plusActive);
 
   const plusIconStyle = useAnimatedStyle(() => ({
-    transform: [
-      { rotate: withTiming(plusActive ? '45deg' : '0deg') },
-    ],
+    transform: [{ rotate: withTiming(plusActive ? "45deg" : "0deg") }],
   }));
 
   const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
   const handlePress = () => {
     if (plusActive) {
-      resetAddLocation()
+      resetAddLocation();
     } else {
-      if (currentRouteName === 'index') setAddLocation('home');
-      else if (currentRouteName === 'planning') Alert.alert('Planning tab + pressed');
-      else if (currentRouteName === 'exercises') setAddLocation('exercises');
-      else if (currentRouteName === 'workouts/[workout]') Alert.alert('Workout + pressed');
+      if (currentRouteName === "index") setAddLocation("home");
+      else if (currentRouteName === "planning")
+        Alert.alert("Planning tab + pressed");
+      else if (currentRouteName === "exercises") setAddLocation("exercises");
+      else if (currentRouteName === "workouts/[workout]")
+        Alert.alert("Workout + pressed");
     }
   };
 
@@ -50,25 +51,25 @@ export const PlusButton = () => {
 
 const styles = StyleSheet.create({
   button: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
-    alignSelf: 'center',
+    alignSelf: "center",
     borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     height: 50,
     width: 50,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   plus: {
     width: 24,
     height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   line: {
-    position: 'absolute',
-    backgroundColor: '#000',
+    position: "absolute",
+    backgroundColor: "#000",
   },
   horizontal: {
     width: 24,

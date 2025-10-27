@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Exercise, getExercises } from '../db/database';
+import { useEffect, useState } from "react";
+import { Exercise, getExercises } from "../db/database";
 
 export function useExercises() {
   const [allExercises, setAllExercises] = useState<Exercise[]>([]);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     getExercises()
       .then((rows) => setAllExercises(rows))
-      .catch((err) => console.error('Failed to load exercises:', err));
+      .catch((err) => console.error("Failed to load exercises:", err));
   }, []);
 
   const handleSearch = (text: string) => {
@@ -20,11 +20,11 @@ export function useExercises() {
   };
 
   const removeExerciseFromList = (exercise: Exercise) => {
-    setAllExercises((prev) => prev.filter(item => item.id !== exercise.id));
+    setAllExercises((prev) => prev.filter((item) => item.id !== exercise.id));
   };
 
   const filteredExercises = allExercises.filter((exercise) =>
-    exercise.name.toUpperCase().includes(searchValue.toUpperCase())
+    exercise.name.toUpperCase().includes(searchValue.toUpperCase()),
   );
 
   return {
@@ -32,6 +32,6 @@ export function useExercises() {
     searchValue,
     handleSearch,
     addExerciseToList,
-    removeExerciseFromList
+    removeExerciseFromList,
   };
 }

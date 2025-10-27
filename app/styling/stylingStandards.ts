@@ -1,19 +1,19 @@
 const Colors = {
-  accent: '#FFCA38',
-  accent_100: '#FFF1CC',
-  primary: '#FF8FAB',
-  primary_30: '#FFF0F4',
-  primary_50: '#FFE5EC',
-  primary_100: '#FFCCD9',
-  primary_200: '#FF99B3',
-  background: '#F3FCFF',
-  background_50: '#E5F9FF',
-  background_100: '#CCF2FF',
-  background_500: '#00BFFF',
-  background_800: '#004D66',
-  error: '#BF0603',
-  text: '#1B1204',
-  text_800: '#593C0D',
+  accent: "#FFCA38",
+  accent_100: "#FFF1CC",
+  primary: "#FF8FAB",
+  primary_30: "#FFF0F4",
+  primary_50: "#FFE5EC",
+  primary_100: "#FFCCD9",
+  primary_200: "#FF99B3",
+  background: "#F3FCFF",
+  background_50: "#E5F9FF",
+  background_100: "#CCF2FF",
+  background_500: "#00BFFF",
+  background_800: "#004D66",
+  error: "#BF0603",
+  text: "#1B1204",
+  text_800: "#593C0D",
 };
 
 const Spacing = {
@@ -40,10 +40,10 @@ const Radius = {
 };
 
 const FontWeights = {
-  regular: '400',
-  medium: '500',
-  bold: '700',
-}
+  regular: "400",
+  medium: "500",
+  bold: "700",
+};
 
 export const theme = {
   Colors,
@@ -53,11 +53,10 @@ export const theme = {
   FontWeights,
 };
 
-
 export type Theme = typeof theme;
 
 export const fontFamilyMap: Record<string, string> = {
-  '400': 'Orbitron_400Regular',
-  '500': 'Orbitron_500Medium',
-  '700': 'Orbitron_700Bold',
+  "400": "Orbitron_400Regular",
+  "500": "Orbitron_500Medium",
+  "700": "Orbitron_700Bold",
 };

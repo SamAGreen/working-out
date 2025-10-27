@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { useLocalSearchParams } from 'expo-router';
-import AnimatedScreenWrapper from '@/app/components/AnimatedScreenWrapper';
-import { theme } from '@/app/styling/stylingStandards';
+import { useLocalSearchParams } from "expo-router";
+import AnimatedScreenWrapper from "@/app/components/AnimatedScreenWrapper";
+import { theme } from "@/app/styling/stylingStandards";
 
 export default function Workout() {
   const { workout } = useLocalSearchParams();
@@ -18,7 +18,6 @@ export default function Workout() {
     <AnimatedScreenWrapper style={styles.container} active={active}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Workout ID: {workout}</Text>
-        
       </View>
 
       <FlatList
@@ -26,7 +25,9 @@ export default function Workout() {
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         style={styles.list}
-        ItemSeparatorComponent={() => <View style={{ height: theme.Spacing.xs }} />}
+        ItemSeparatorComponent={() => (
+          <View style={{ height: theme.Spacing.xs }} />
+        )}
         renderItem={({ item }) => (
           <View style={styles.listItem}>
             <Text style={styles.listItemText}>{item.title}</Text>
@@ -34,11 +35,13 @@ export default function Workout() {
         )}
       />
       <Pressable
-          style={[styles.toggleButton, active && styles.toggleButtonActive]}
-          onPress={() => setActive(!active)}
-        >
-          <Text style={styles.toggleText}>{active ? 'Finish Workout' : 'Edit Workout'}</Text>
-        </Pressable>
+        style={[styles.toggleButton, active && styles.toggleButtonActive]}
+        onPress={() => setActive(!active)}
+      >
+        <Text style={styles.toggleText}>
+          {active ? "Finish Workout" : "Edit Workout"}
+        </Text>
+      </Pressable>
     </AnimatedScreenWrapper>
   );
 }
@@ -48,13 +51,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginBottom: theme.Spacing.md,
   },
   headerText: {
     fontSize: theme.FontSizes.xl,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: theme.Colors.text,
     marginBottom: theme.Spacing.sm,
   },
@@ -69,10 +72,10 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     color: theme.Colors.text,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   list: {
-    width: '100%',
+    width: "100%",
   },
   listItem: {
     backgroundColor: theme.Colors.primary_50,
