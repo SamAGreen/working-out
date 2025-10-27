@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useLocalSearchParams } from 'expo-router';
 import AnimatedScreenWrapper from '@/app/components/AnimatedScreenWrapper';

@@ -68,7 +68,7 @@ const ExerciseListItemComponent: React.FC<ExerciseListItemProps> = ({ exercise, 
                             color={theme.Colors.text_800}
                             style={{ marginBottom: theme.Spacing.lg, textAlign: 'center' }}
                         >
-                            Are you sure you want to delete "{exercise.name}"?
+                            Are you sure you want to delete {exercise.name}?
                         </CustomText>
 
                         <View style={styles.modalButtons}>

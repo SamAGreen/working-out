@@ -23,7 +23,7 @@ const AnimatedScreenWrapper: React.FC<AnimatedScreenWrapperProps> = ({
             duration: 500,
             useNativeDriver: true,
         }).start();
-    }, [active]);
+    }, [active, fadeAnim]);
 
     const backgroundColors: [ColorValue, ColorValue, ...ColorValue[]] = [
         theme.Colors.background_500,

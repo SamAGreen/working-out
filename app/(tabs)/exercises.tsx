@@ -42,7 +42,7 @@ export default function ExercisesScreen() {
       return () => {
         resetAddLocation();
       };
-    }, [])
+    }, [resetAddLocation])
   );
 
   const handleDelete = (exercise: Exercise) => {

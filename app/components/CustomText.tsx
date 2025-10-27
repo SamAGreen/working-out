@@ -2,8 +2,6 @@ import React, { ReactNode } from 'react';
 import { Text, TextProps, TextStyle } from 'react-native';
 import { fontFamilyMap, theme } from '../styling/stylingStandards';
 
-type FontWeight = '400' | '500' | '700';
-
 interface CustomTextProps extends TextProps {
     children: ReactNode;
     size?: number;
@@ -13,14 +11,14 @@ interface CustomTextProps extends TextProps {
 }
 
 const CustomText: React.FC<CustomTextProps> = ({ children, size = theme.FontSizes.medium, color = theme.Colors.text, weight = theme.FontWeights.medium, style, ...rest }) => {
-  return (
-    <Text
-      style={[{ fontFamily: fontFamilyMap[weight], fontSize: size, color }, style]}
-      {...rest}
-    >
-      {children}
-    </Text>
-  );
+    return (
+        <Text
+            style={[{ fontFamily: fontFamilyMap[weight], fontSize: size, color }, style]}
+            {...rest}
+        >
+            {children}
+        </Text>
+    );
 };
 
 export default CustomText;
