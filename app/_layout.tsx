@@ -21,6 +21,7 @@ export default function RootLayout() {
     async function prepare() {
       try {
         console.log("Setting up DB...");
+        //await clearDatabase();
         await setupDB();
         console.log("DB setup complete.");
       } catch (error) {
