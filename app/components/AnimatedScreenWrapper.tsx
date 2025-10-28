@@ -13,13 +13,13 @@ interface AnimatedScreenWrapperProps {
 const AnimatedScreenWrapper: React.FC<AnimatedScreenWrapperProps> = ({
   children,
   style,
-  finished = true,
+  finished = false,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
-      toValue: finished ? 1 : 0,
+      toValue: !finished ? 1 : 0,
       duration: 500,
       useNativeDriver: true,
     }).start();
@@ -45,12 +45,12 @@ const AnimatedScreenWrapper: React.FC<AnimatedScreenWrapperProps> = ({
       edges={["top", "left", "right"]}
     >
       <LinearGradient
-        colors={primaryColors}
+        colors={backgroundColors}
         style={StyleSheet.absoluteFillObject}
       />
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}>
         <LinearGradient
-          colors={backgroundColors}
+          colors={primaryColors}
           style={StyleSheet.absoluteFillObject}
         />
       </Animated.View>
