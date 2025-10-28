@@ -12,7 +12,6 @@ export interface AddItemModalProps<T, U> {
   visible: boolean;
   onClose: () => void;
   onAdd: (shell: U) => Promise<T>;
-  onAddToList: (item: T) => void;
   createShell: (name: string) => U;
   placeholder?: string;
   title?: string;
@@ -22,7 +21,6 @@ export default function AddItemModal<T, U>({
   visible,
   onClose,
   onAdd,
-  onAddToList,
   createShell,
   placeholder = "Add Item...",
   title = "Add Item",
@@ -36,9 +34,7 @@ export default function AddItemModal<T, U>({
     const shell = createShell(trimmed);
 
     onAdd(shell)
-      .then((result) => {
-        onAddToList(result);
-      })
+      .then((result) => {})
       .catch((err) => {
         console.error("AddItemModal Error:", err);
       });

@@ -1,12 +1,12 @@
 import { SQLiteDatabase } from "expo-sqlite";
-import { dbPromise } from "./database";
 import { Workout, WorkoutShell } from "../util/dataTypes";
+import { dbPromise } from "./database";
 
-export async function getWorkout(id: string): Promise<Workout> {
+export async function getWorkoutFromDb(id: number): Promise<Workout> {
   const db = await dbPromise;
   const result = await db.getFirstAsync<Workout>(
     "SELECT * FROM workouts WHERE id = ?",
-    id,
+    id
   );
   if (result) {
     return {
@@ -14,7 +14,7 @@ export async function getWorkout(id: string): Promise<Workout> {
       name: result.name,
       date: result.date,
       duration: result.duration,
-      finished: result.finished ? true: false,
+      finished: result.finished ? true : false,
     };
   }
 
@@ -27,17 +27,23 @@ export async function getWorkout(id: string): Promise<Workout> {
   };
 }
 
-export async function setWorkoutFinished(id: string, finished: boolean): Promise<number> {
+export async function setWorkoutFinishedDb(
+  id: number,
+  finished: boolean
+): Promise<number> {
   const db = await dbPromise;
-  const editResult = await db.runAsync("UPDATE workouts SET finished = ? WHERE id = ?",finished ? 1 :0, id);
-  console.log(`Changed ${id} to ${finished} resulting in ${editResult.changes}`);
+  const editResult = await db.runAsync(
+    "UPDATE workouts SET finished = ? WHERE id = ?",
+    finished ? 1 : 0,
+    id
+  );
   return editResult.changes;
 }
 
-export async function getAllWorkouts(): Promise<Workout[]> {
+export async function getAllWorkoutsFromDb(): Promise<Workout[]> {
   const db = await dbPromise;
   const result = await db.getAllAsync<Workout>(
-    "SELECT * FROM workouts ORDER BY date DESC",
+    "SELECT * FROM workouts ORDER BY date DESC"
   );
   return result.map((workout) => ({
     id: workout.id,
@@ -48,7 +54,7 @@ export async function getAllWorkouts(): Promise<Workout[]> {
   }));
 }
 
-export async function addWorkout(workout: WorkoutShell): Promise<Workout> {
+export async function addWorkoutToDb(workout: WorkoutShell): Promise<Workout> {
   const db = await dbPromise;
   try {
     const insertResult = await db.runAsync(
@@ -56,12 +62,12 @@ export async function addWorkout(workout: WorkoutShell): Promise<Workout> {
       workout.name,
       workout.date,
       workout.duration,
-      workout.finished,
+      workout.finished
     );
 
     const result = await db.getFirstAsync<Workout>(
       "SELECT * FROM workouts WHERE id = ?",
-      insertResult.lastInsertRowId,
+      insertResult.lastInsertRowId
     );
 
     if (result) {
@@ -93,12 +99,12 @@ export async function addWorkout(workout: WorkoutShell): Promise<Workout> {
   }
 }
 
-export async function deleteWorkout(workoutId: number): Promise<boolean> {
+export async function deleteWorkoutFromDb(workoutId: number): Promise<boolean> {
   const db = await dbPromise;
   try {
     const result = await db.runAsync(
       "DELETE FROM workouts WHERE id = ?",
-      workoutId,
+      workoutId
     );
     if (result.changes === 1) {
       return true;
@@ -124,7 +130,7 @@ export async function setupExerciseDB(db: SQLiteDatabase) {
     `);
 
   const check = await db.getFirstAsync<{ count: number }>(
-    "SELECT COUNT(*) as count FROM workouts",
+    "SELECT COUNT(*) as count FROM workouts"
   );
 
   if (check?.count === 0) {
@@ -209,7 +215,7 @@ export async function setupExerciseDB(db: SQLiteDatabase) {
         workout.name,
         workout.date,
         workout.duration,
-        workout.finished,
+        workout.finished
       );
     }
   }

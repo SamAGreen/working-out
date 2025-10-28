@@ -1,15 +1,17 @@
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import AnimatedScreenWrapper from "@/app/components/AnimatedScreenWrapper";
 import ScreenWrapper from "@/app/components/ScreenWrapper";
-import { getWorkout, setWorkoutFinished } from "@/app/db/workoutDb";
+import {
+  useGetWorkout,
+  useSetWorkoutFinished,
+} from "@/app/stores/workoutStore";
 import { theme } from "@/app/styling/stylingStandards";
 
 export default function WorkoutPage() {
   const { workout } = useLocalSearchParams<{ workout: string }>();
-  const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(true);
   const [workoutData, setWorkoutData] = useState<null | {
     id: number;
@@ -18,14 +20,18 @@ export default function WorkoutPage() {
     finished: boolean;
   }>(null);
 
+  const setWorkoutFinished = useSetWorkoutFinished();
+  const getWorkout = useGetWorkout();
+
   useEffect(() => {
     const fetchData = async () => {
+      if (!workout) return;
+      setLoading(true);
       try {
-        if (!workout) return;
-
-        const workoutData = await getWorkout(workout);
-        setWorkoutData(workoutData);
-        setFinished(workoutData.finished);
+        const result = await getWorkout(+workout);
+        if (result.success) {
+          setWorkoutData(result.data);
+        }
       } catch (error) {
         console.error("Error loading workout page:", error);
       } finally {
@@ -34,19 +40,19 @@ export default function WorkoutPage() {
     };
 
     fetchData();
-     console.log("Finished: ", finished)
-  }, [workout]);
+  }, [workout, getWorkout]);
 
-  const handleFinishWorkout = () => {
-    setFinished(!workoutData?.finished);
-    setWorkoutFinished(workout, !workoutData?.finished)
-      .then((result) => {
-        if (result !== 1) {
-          setFinished(!finished);
-          console.log("Well that didn't work out");
-        }
-      })
-      .catch((error) => console.log("Error!: ", error));
+  const handleFinishWorkout = async () => {
+    if (!workoutData) return;
+
+    const newFinished = !workoutData.finished;
+    setWorkoutData({ ...workoutData, finished: newFinished });
+
+    const result = await setWorkoutFinished(workoutData.id, newFinished);
+    if (!result.success) {
+      setWorkoutData({ ...workoutData, finished: !newFinished });
+      console.log("Failed to update workout status");
+    }
   };
 
   if (loading) {
@@ -66,7 +72,10 @@ export default function WorkoutPage() {
   }
 
   return (
-    <AnimatedScreenWrapper style={styles.container} finished={finished}>
+    <AnimatedScreenWrapper
+      style={styles.container}
+      finished={workoutData.finished}
+    >
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>{workoutData.name}</Text>
         <Text style={styles.headerSubText}>Date: {workoutData.date}</Text>
@@ -121,8 +130,5 @@ const styles = StyleSheet.create({
   toggleText: {
     color: theme.Colors.text,
     fontWeight: "600",
-  },
-  list: {
-    width: "100%",
   },
 });

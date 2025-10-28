@@ -9,7 +9,7 @@ import DeleteItemModal from "./DeleteItemModal";
 
 interface WorkoutListItemProps {
   workout: Workout;
-  handleDelete: (workout: Workout) => void;
+  handleDelete: (id: number) => void;
 }
 
 const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
@@ -22,7 +22,7 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
 
   const handleConfirmDelete = () => {
     setShowDeleteModal(false);
-    handleDelete(workout);
+    handleDelete(workout.id);
   };
 
   return (

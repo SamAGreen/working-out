@@ -1,18 +1,25 @@
 import { Image } from "expo-image";
+import { useEffect } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import AddItemModal from "../components/AddItemModal";
 import ScreenWrapper from "../components/ScreenWrapper";
 import WorkoutListItem from "../components/WorkoutListItem";
-import { addWorkout, deleteWorkout } from "../db/workoutDb";
-import { useWorkouts } from "../hooks/useWorkouts";
 import { useAddLocation } from "../stores/addLocationStore";
+import {
+  useAddWorkout,
+  useDeleteWorkout,
+  useGetAllWorkouts,
+  useWorkouts,
+} from "../stores/workoutStore";
 import { theme } from "../styling/stylingStandards";
-import { Workout, WorkoutShell } from "../util/dataTypes";
+import { WorkoutShell } from "../util/dataTypes";
 import { getCurrentTimestamp } from "../util/time";
 
 export default function Index() {
-  const { allWorkouts, addWorkoutToList, removeWorkoutFromList } =
-    useWorkouts();
+  const workouts = useWorkouts();
+  const getAllWorkouts = useGetAllWorkouts();
+  const deleteWorkout = useDeleteWorkout();
+  const addWorkout = useAddWorkout();
 
   const localLocation = "home";
   const plusLocation = useAddLocation((state) => state.plusLocation);
@@ -29,14 +36,17 @@ export default function Index() {
 
   const image = require("../../assets/images/thedon.jpg");
 
-  const handleDelete = (workout: Workout) => {
-    deleteWorkout(workout.id).then((success) => {
-      if (success) {
-        removeWorkoutFromList(workout);
-      } else {
-        console.log("Something went wrong handling delete");
-      }
-    });
+  useEffect(() => {
+    (async () => {
+      await getAllWorkouts();
+    })();
+  }, [getAllWorkouts]);
+
+  const handleDelete = async (id: number) => {
+    const result = await deleteWorkout(id);
+    if (!result.success) {
+      console.log("Something went wrong handling delete: ", result.error);
+    }
   };
 
   return (
@@ -51,7 +61,7 @@ export default function Index() {
       <View style={styles.listContainer}>
         <FlatList
           showsVerticalScrollIndicator={false}
-          data={allWorkouts}
+          data={workouts}
           renderItem={({ item }) => (
             <WorkoutListItem workout={item} handleDelete={handleDelete} />
           )}
@@ -65,7 +75,6 @@ export default function Index() {
         visible={plusLocation === localLocation}
         onClose={resetAddLocation}
         onAdd={addWorkout}
-        onAddToList={addWorkoutToList}
         createShell={createWorkoutShell}
       />
     </ScreenWrapper>
