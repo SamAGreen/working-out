@@ -1,31 +1,26 @@
 import { useFocusEffect } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { AddExerciseItem } from "../components/AddExerciseItem";
 import ExerciseListItem from "../components/ExerciseListItem";
 import ScreenWrapper from "../components/ScreenWrapper";
 import SearchBar from "../components/SearchBar";
+import { useAddLocation } from "../stores/addLocationStore";
+import {
+  useAddExercise,
+  useDeleteExercise,
+  useExercises,
+  useGetAllExercises,
+} from "../stores/exerciseStore";
+import { theme } from "../styling/stylingStandards";
 import {
   Exercise,
   ExerciseShell,
   MetricToNiceString,
   TrackingMetric,
-  addExercise,
-  deleteExercise,
-} from "../db/exerciseDb";
-import { useAddLocation } from "../hooks/useAddStore";
-import { useExercises } from "../hooks/useExercises";
-import { theme } from "../styling/stylingStandards";
+} from "../util/dataTypes";
 
 export default function ExercisesScreen() {
-  const {
-    filteredExercises,
-    searchValue,
-    handleSearch,
-    addExerciseToList,
-    removeExerciseFromList,
-  } = useExercises();
-
   const plusLocation = useAddLocation((state) => state.plusLocation);
   const resetAddLocation = useAddLocation((state) => state.resetAddLocation);
   const localLocation = "exercises";
@@ -33,32 +28,53 @@ export default function ExercisesScreen() {
   const [newExerciseName, setNewExerciseName] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<TrackingMetric>(
-    TrackingMetric.REPS_WEIGHT,
+    TrackingMetric.REPS_WEIGHT
   );
 
-  const [items, setItems] = useState(
-    Object.values(TrackingMetric).map((key) => ({
-      label: MetricToNiceString(key),
-      value: key,
-    })),
-  );
+  const [searchValue, setSearchValue] = useState("");
+
+  const getAllExercises = useGetAllExercises();
+
+  const addExercise = useAddExercise();
+
+  const deleteExercise = useDeleteExercise();
+
+  const allExercises = useExercises();
+  const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      await getAllExercises();
+    })();
+  }, [getAllExercises]);
+
+  useEffect(() => {
+    const filtered = allExercises.filter((exercise) =>
+      exercise.name.toUpperCase().includes(searchValue.toUpperCase())
+    );
+    setFilteredExercises(filtered);
+  }, [searchValue, allExercises]);
 
   useFocusEffect(
     useCallback(() => {
       return () => {
         resetAddLocation();
       };
-    }, [resetAddLocation]),
+    }, [resetAddLocation])
   );
 
-  const handleDelete = (exercise: Exercise) => {
-    deleteExercise(exercise.id).then((success) => {
-      if (success) {
-        removeExerciseFromList(exercise);
-      } else {
-        console.log("Something went wrong handling delete");
-      }
-    });
+  const [items, setItems] = useState(
+    Object.values(TrackingMetric).map((key) => ({
+      label: MetricToNiceString(key),
+      value: key,
+    }))
+  );
+
+  const handleDelete = async (exercise: Exercise) => {
+    const result = await deleteExercise(exercise.id);
+    if (!result.success) {
+      console.log("Something went wrong handling delete: ", result.error);
+    }
   };
 
   const handleAddNewExercise = async () => {
@@ -68,29 +84,24 @@ export default function ExercisesScreen() {
       name: newExerciseName,
       trackingMetric: selectedMetric,
     };
-    try {
-      const newExercise = await addExercise(shell);
-      addExerciseToList({
-        id: newExercise.id,
-        name: newExercise.name,
-        trackingMetric: newExercise.trackingMetric,
-      });
-      setNewExerciseName("");
-      setSelectedMetric(TrackingMetric.REPS_WEIGHT);
-      resetAddLocation();
-    } catch (error) {
-      console.error("Error adding exercise:", error);
-    }
-  };
 
-  const listData = useMemo(() => filteredExercises, [filteredExercises]);
+    const result = await addExercise(shell);
+    if (!result.success) {
+      console.log("Something went wrong adding: ", result.error);
+      return;
+    }
+
+    setNewExerciseName("");
+    setSelectedMetric(TrackingMetric.REPS_WEIGHT);
+    resetAddLocation();
+  };
 
   return (
     <ScreenWrapper style={styles.container}>
       <SearchBar
         value={searchValue}
-        onChangeText={handleSearch}
-        onClear={() => handleSearch("")}
+        onChangeText={(text) => setSearchValue(text)}
+        onClear={() => setSearchValue("")}
         placeholder="Search exercises..."
       />
 
@@ -108,7 +119,7 @@ export default function ExercisesScreen() {
         />
       )}
       <FlatList
-        data={listData}
+        data={filteredExercises}
         renderItem={({ item }) => (
           <ExerciseListItem exercise={item} onDelete={handleDelete} />
         )}

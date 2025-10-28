@@ -1,51 +1,8 @@
 import { SQLiteDatabase } from "expo-sqlite";
 import { dbPromise } from "./database";
+import { ExerciseShell, TrackingMetric, Exercise } from "../util/dataTypes";
 
-export enum TrackingMetric {
-  DISTANCE = "distance",
-  DISTANCE_TIME = "distance_time",
-  DISTANCE_WEIGHT = "distance_weight",
-  DURATION = "duration",
-  DURATION_CALORIES = "duration_calories",
-  DURATION_WEIGHT = "duration_weight",
-  REPS = "reps",
-  REPS_WEIGHT = "reps_weight",
-  TIME = "time",
-}
 
-export function MetricToNiceString(metric: TrackingMetric): string {
-  switch (metric) {
-    case TrackingMetric.DISTANCE:
-      return "Distance";
-    case TrackingMetric.DISTANCE_TIME:
-      return "Distance/Time";
-    case TrackingMetric.DISTANCE_WEIGHT:
-      return "Weight/Distance";
-    case TrackingMetric.DURATION:
-      return "Duration";
-    case TrackingMetric.DURATION_CALORIES:
-      return "Duration/Calories";
-    case TrackingMetric.DURATION_WEIGHT:
-      return "Weight/Duration";
-    case TrackingMetric.REPS:
-      return "Reps";
-    case TrackingMetric.REPS_WEIGHT:
-      return "Weight/Reps";
-    case TrackingMetric.TIME:
-      return "Time";
-  }
-}
-
-export type Exercise = {
-  id: number;
-  name: string;
-  trackingMetric: TrackingMetric;
-};
-
-export type ExerciseShell = {
-  name: string;
-  trackingMetric: TrackingMetric;
-};
 
 export async function setupWorkoutDB(db: SQLiteDatabase) {
   await db.execAsync(`
@@ -83,12 +40,12 @@ export async function setupWorkoutDB(db: SQLiteDatabase) {
     await db.runAsync(
       "INSERT OR IGNORE INTO exercises (name, tracking_metric) VALUES (?, ?);",
       exercise.name,
-      exercise.trackingMetric,
+      exercise.trackingMetric
     );
   }
 }
 
-export async function getExercises(): Promise<Exercise[]> {
+export async function getAllExercisesFromDB(): Promise<Exercise[]> {
   const db = await dbPromise;
   const rows = await db.getAllAsync<{
     id: number;
@@ -103,13 +60,15 @@ export async function getExercises(): Promise<Exercise[]> {
   }));
 }
 
-export async function addExercise(exercise: ExerciseShell): Promise<Exercise> {
+export async function addExerciseToDB(
+  exerciseShell: ExerciseShell
+): Promise<Exercise> {
   const db = await dbPromise;
   try {
     const insertResult = await db.runAsync(
       "INSERT INTO exercises (name, tracking_metric) VALUES (?, ?)",
-      exercise.name,
-      exercise.trackingMetric,
+      exerciseShell.name,
+      exerciseShell.trackingMetric
     );
 
     const row = await db.getFirstAsync<{
@@ -141,12 +100,14 @@ export async function addExercise(exercise: ExerciseShell): Promise<Exercise> {
   }
 }
 
-export async function deleteExercise(exerciseId: number): Promise<boolean> {
+export async function deleteExerciseFromDb(
+  exerciseId: number
+): Promise<boolean> {
   const db = await dbPromise;
   try {
     const result = await db.runAsync(
       "DELETE FROM exercises WHERE id = ?",
-      exerciseId,
+      exerciseId
     );
     if (result.changes === 1) {
       return true;

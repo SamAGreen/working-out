@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Exercise, MetricToNiceString } from "../db/exerciseDb";
 import { theme } from "../styling/stylingStandards";
 import CustomText from "./CustomText";
 import DeleteItemModal from "./DeleteItemModal";
+import { Exercise, MetricToNiceString } from "../util/dataTypes";
 
 interface ExerciseListItemProps {
   exercise: Exercise;

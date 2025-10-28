@@ -3,15 +3,11 @@ import { FlatList, StyleSheet, View } from "react-native";
 import AddItemModal from "../components/AddItemModal";
 import ScreenWrapper from "../components/ScreenWrapper";
 import WorkoutListItem from "../components/WorkoutListItem";
-import {
-  addWorkout,
-  deleteWorkout,
-  Workout,
-  WorkoutShell,
-} from "../db/workoutDb";
-import { useAddLocation } from "../hooks/useAddStore";
+import { addWorkout, deleteWorkout } from "../db/workoutDb";
 import { useWorkouts } from "../hooks/useWorkouts";
+import { useAddLocation } from "../stores/addLocationStore";
 import { theme } from "../styling/stylingStandards";
+import { Workout, WorkoutShell } from "../util/dataTypes";
 import { getCurrentTimestamp } from "../util/time";
 
 export default function Index() {

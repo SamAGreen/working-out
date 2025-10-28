@@ -1,20 +1,6 @@
 import { SQLiteDatabase } from "expo-sqlite";
 import { dbPromise } from "./database";
-
-export type Workout = {
-  id: number;
-  name: string;
-  date: string;
-  duration: number | null;
-  finished: boolean;
-};
-
-export type WorkoutShell = {
-  name: string;
-  date: string;
-  duration: number | null;
-  finished: number;
-};
+import { Workout, WorkoutShell } from "../util/dataTypes";
 
 export async function getWorkout(id: string): Promise<Workout> {
   const db = await dbPromise;

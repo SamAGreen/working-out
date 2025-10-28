@@ -1,8 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Workout } from "../db/workoutDb";
 import { theme } from "../styling/stylingStandards";
+import { Workout } from "../util/dataTypes";
 import { formatDate } from "../util/time";
 import CustomText from "./CustomText";
 import DeleteItemModal from "./DeleteItemModal";

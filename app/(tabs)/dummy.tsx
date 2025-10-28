@@ -5,7 +5,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { useAddLocation } from "../hooks/useAddStore";
+import { useAddLocation } from "../stores/addLocationStore";
 
 export default function DummyScreen() {
   return <></>;
@@ -13,7 +13,7 @@ export default function DummyScreen() {
 
 export const PlusButton = () => {
   const currentRouteName = useNavigationState(
-    (state) => state.routes[state.index].name,
+    (state) => state.routes[state.index].name
   );
 
   const setAddLocation = useAddLocation((state) => state.setAddLocation);
