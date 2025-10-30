@@ -3,12 +3,14 @@ import {
   addExerciseToDB,
   deleteExerciseFromDb,
   getAllExercisesFromDB,
+  getExercisesByIdFromDb,
 } from "../db/exerciseDb";
 import { Exercise, ExerciseShell, Result } from "../util/dataTypes";
 
 interface ExerciseState {
   exercises: Exercise[];
   getAllExercises: () => Promise<void>;
+  getExercisesById: (ids: number[]) => Promise<Result<Exercise[]>>;
   addExercise: (exerciseShell: ExerciseShell) => Promise<Result<Exercise>>;
   deleteExercise: (id: number) => Promise<Result<void>>;
 }
@@ -22,6 +24,16 @@ const useExerciseStore = create<ExerciseState>((set, get) => ({
       set({ exercises: exercises });
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  getExercisesById: async (ids) => {
+    try {
+      const exercises = await getExercisesByIdFromDb(ids);
+      return { success: true, data: exercises };
+    } catch (error) {
+      console.log(error);
+      return { success: false, error: error as Error };
     }
   },
 
@@ -57,3 +69,6 @@ export const useDeleteExercise = () =>
 
 export const useGetAllExercises = () =>
   useExerciseStore((state) => state.getAllExercises);
+
+export const useGetExercises = () =>
+  useExerciseStore((state) => state.getExercisesById);

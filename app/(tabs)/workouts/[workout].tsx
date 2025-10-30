@@ -1,14 +1,19 @@
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 import AnimatedScreenWrapper from "@/app/components/AnimatedScreenWrapper";
+import CustomText from "@/app/components/CustomText";
 import ScreenWrapper from "@/app/components/ScreenWrapper";
+import { useGetExercises } from "@/app/stores/exerciseStore";
+import { useGetSets, useSets } from "@/app/stores/setStore";
 import {
   useGetWorkout,
   useSetWorkoutFinished,
 } from "@/app/stores/workoutStore";
 import { theme } from "@/app/styling/stylingStandards";
+import { Exercise } from "@/app/util/dataTypes";
+import { formatDateFromISO } from "@/app/util/util";
 
 export default function WorkoutPage() {
   const { workout } = useLocalSearchParams<{ workout: string }>();
@@ -23,14 +28,28 @@ export default function WorkoutPage() {
   const setWorkoutFinished = useSetWorkoutFinished();
   const getWorkout = useGetWorkout();
 
+  const sets = useSets();
+  const getSetsByWorkoutId = useGetSets();
+  const getExercisesById = useGetExercises();
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+
+  const getExerciseName = (id: number): string => {
+    const exercise = exercises.find((exercise) => exercise.id === id);
+
+    if (exercise) return exercise.name;
+    return "Yeah, I don't even know";
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!workout) return;
       setLoading(true);
       try {
         const result = await getWorkout(+workout);
+
         if (result.success) {
           setWorkoutData(result.data);
+          await getSetsByWorkoutId(result.data.id);
         }
       } catch (error) {
         console.error("Error loading workout page:", error);
@@ -41,6 +60,20 @@ export default function WorkoutPage() {
 
     fetchData();
   }, [workout, getWorkout]);
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      if (sets.length === 0) return;
+
+      const allIds = sets.map((set) => set.exerciseId);
+      const uniqueIds = [...new Set(allIds)];
+
+      const result = await getExercisesById(uniqueIds);
+      if (result.success) setExercises(result.data);
+    };
+
+    fetchExercises();
+  }, [sets]);
 
   const handleFinishWorkout = async () => {
     if (!workoutData) return;
@@ -77,8 +110,20 @@ export default function WorkoutPage() {
       finished={workoutData.finished}
     >
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>{workoutData.name}</Text>
-        <Text style={styles.headerSubText}>Date: {workoutData.date}</Text>
+        <CustomText style={styles.headerText}>{workoutData.name}</CustomText>
+        <CustomText style={styles.headerSubText}>
+          {formatDateFromISO(workoutData.date)}
+        </CustomText>
+        <View style={styles.listContainer}>
+          <FlatList
+            data={sets}
+            renderItem={({ item }) => (
+              <View>
+                <CustomText>{getExerciseName(item.exerciseId)}</CustomText>
+              </View>
+            )}
+          />
+        </View>
       </View>
 
       <Pressable
@@ -104,6 +149,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginBottom: theme.Spacing.md,
+    flex: 1,
   },
   headerText: {
     fontSize: theme.FontSizes.xl,
@@ -115,6 +161,9 @@ const styles = StyleSheet.create({
     fontSize: theme.FontSizes.medium,
     color: theme.Colors.text_800,
     marginBottom: theme.Spacing.xs,
+  },
+  listContainer: {
+    flex: 2,
   },
   toggleButton: {
     backgroundColor: theme.Colors.background,

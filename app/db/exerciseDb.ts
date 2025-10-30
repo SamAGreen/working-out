@@ -138,3 +138,25 @@ export async function deleteExerciseFromDb(
     return false;
   }
 }
+
+export async function getExercisesByIdFromDb(
+  ids: number[]
+): Promise<Exercise[]> {
+  const db = await dbPromise;
+
+  const placeholders = ids.map(() => "?").join(", ");
+
+  const query = `SELECT * FROM exercises WHERE id IN (${placeholders})`;
+
+  const rows = await db.getAllAsync<{
+    id: number;
+    name: string;
+    tracking_metric: string;
+  }>(query, ids);
+
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    trackingMetric: row.tracking_metric as TrackingMetric,
+  }));
+}

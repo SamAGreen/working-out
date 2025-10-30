@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { theme } from "../styling/stylingStandards";
 import { Workout } from "../util/dataTypes";
-import { formatDateFromISO } from "../util/time";
+import { formatDateFromISO } from "../util/util";
 import CustomText from "./CustomText";
 
 interface WorkoutListItemProps {
