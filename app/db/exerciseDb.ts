@@ -1,8 +1,6 @@
 import { SQLiteDatabase } from "expo-sqlite";
+import { Exercise, ExerciseShell, TrackingMetric } from "../util/dataTypes";
 import { dbPromise } from "./database";
-import { ExerciseShell, TrackingMetric, Exercise } from "../util/dataTypes";
-
-
 
 export async function setupWorkoutDB(db: SQLiteDatabase) {
   await db.execAsync(`
@@ -14,25 +12,45 @@ export async function setupWorkoutDB(db: SQLiteDatabase) {
     `);
 
   const insertStatements: ExerciseShell[] = [
-    { name: "Back Squat", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Benchpress", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Deadlift", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Overhead Press", trackingMetric: TrackingMetric.REPS_WEIGHT },
+    { name: "Back Squat", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Benchpress", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Deadlift", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Overhead Press", trackingMetric: TrackingMetric.WEIGHT_REPS },
     { name: "Pushup", trackingMetric: TrackingMetric.REPS },
-    { name: "Front Squat", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Bicep Curl", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Lateral Raise", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Leg Extension", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Calf Raise", trackingMetric: TrackingMetric.REPS_WEIGHT },
-    { name: "Leg Raise", trackingMetric: TrackingMetric.REPS_WEIGHT },
+    { name: "Front Squat", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Bicep Curl", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Lateral Raise", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Leg Extension", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Calf Raise", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Leg Raise", trackingMetric: TrackingMetric.WEIGHT_REPS },
     { name: "Lying Leg Raise", trackingMetric: TrackingMetric.REPS },
     {
       name: "Bulgarian Split Squat",
-      trackingMetric: TrackingMetric.REPS_WEIGHT,
+      trackingMetric: TrackingMetric.WEIGHT_REPS,
     },
     {
       name: "Assault Bike",
-      trackingMetric: TrackingMetric.DURATION_CALORIES,
+      trackingMetric: TrackingMetric.CALORIES_TIME,
+    },
+    {
+      name: "Sprints",
+      trackingMetric: TrackingMetric.DISTANCE,
+    },
+    {
+      name: "Plank",
+      trackingMetric: TrackingMetric.TIME,
+    },
+    {
+      name: "Run",
+      trackingMetric: TrackingMetric.DISTANCE_TIME,
+    },
+    {
+      name: "Farmer's Walk",
+      trackingMetric: TrackingMetric.WEIGHT_DISTANCE,
+    },
+    {
+      name: "Weighted Plank",
+      trackingMetric: TrackingMetric.WEIGHT_TIME,
     },
   ];
 
@@ -88,14 +106,14 @@ export async function addExerciseToDB(
     return {
       id: -1,
       name: "yeah, that ain't right",
-      trackingMetric: TrackingMetric.DURATION_WEIGHT,
+      trackingMetric: TrackingMetric.WEIGHT_TIME,
     };
   } catch (error) {
     console.error("There has been an error adding:", error);
     return {
       id: -1,
       name: "yeah, that ain't right",
-      trackingMetric: TrackingMetric.DURATION_WEIGHT,
+      trackingMetric: TrackingMetric.WEIGHT_TIME,
     };
   }
 }

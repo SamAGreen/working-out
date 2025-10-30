@@ -3,7 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { setupDB } from "./db/database";
+import { clearDatabase, setupDB } from "./db/database";
 
 /* For Database Debugging */
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";

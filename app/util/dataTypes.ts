@@ -3,37 +3,34 @@ export type Result<T> =
   | { success: false; error: Error };
 
 export enum TrackingMetric {
+  WEIGHT_REPS = "WEIGHT_REPS",
+  REPS = "reps",
+  CALORIES_TIME = "calories_time",
+  TIME = "time",
   DISTANCE = "distance",
   DISTANCE_TIME = "distance_time",
-  DISTANCE_WEIGHT = "distance_weight",
-  DURATION = "duration",
-  DURATION_CALORIES = "duration_calories",
-  DURATION_WEIGHT = "duration_weight",
-  REPS = "reps",
-  REPS_WEIGHT = "reps_weight",
-  TIME = "time",
+  WEIGHT_DISTANCE = "weight_distance",
+  WEIGHT_TIME = "weight_time",
 }
 
 export function MetricToNiceString(metric: TrackingMetric): string {
   switch (metric) {
+    case TrackingMetric.WEIGHT_REPS:
+      return "Weight/Reps";
+    case TrackingMetric.REPS:
+      return "Reps";
+    case TrackingMetric.CALORIES_TIME:
+      return "Calories/Time";
+    case TrackingMetric.TIME:
+      return "Time";
     case TrackingMetric.DISTANCE:
       return "Distance";
     case TrackingMetric.DISTANCE_TIME:
       return "Distance/Time";
-    case TrackingMetric.DISTANCE_WEIGHT:
+    case TrackingMetric.WEIGHT_DISTANCE:
       return "Weight/Distance";
-    case TrackingMetric.DURATION:
-      return "Duration";
-    case TrackingMetric.DURATION_CALORIES:
-      return "Duration/Calories";
-    case TrackingMetric.DURATION_WEIGHT:
-      return "Weight/Duration";
-    case TrackingMetric.REPS:
-      return "Reps";
-    case TrackingMetric.REPS_WEIGHT:
-      return "Weight/Reps";
-    case TrackingMetric.TIME:
-      return "Time";
+    case TrackingMetric.WEIGHT_TIME:
+      return "Weight/Time";
   }
 }
 

@@ -28,7 +28,7 @@ export default function ExercisesScreen() {
   const [newExerciseName, setNewExerciseName] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<TrackingMetric>(
-    TrackingMetric.REPS_WEIGHT
+    TrackingMetric.WEIGHT_REPS
   );
 
   const [searchValue, setSearchValue] = useState("");
@@ -92,7 +92,7 @@ export default function ExercisesScreen() {
     }
 
     setNewExerciseName("");
-    setSelectedMetric(TrackingMetric.REPS_WEIGHT);
+    setSelectedMetric(TrackingMetric.WEIGHT_REPS);
     resetAddLocation();
   };
 

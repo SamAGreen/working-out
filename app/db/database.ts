@@ -6,8 +6,8 @@ export type Set = {
   id: number;
   workoutId: number; // foreign key
   exerciseId: number; // foreign key
-  Weight: number;
-  Reps: number;
+  metricValueOne: number;
+  metricValueTwo: number;
 };
 
 export const dbPromise = SQLite.openDatabaseAsync("database.db");
