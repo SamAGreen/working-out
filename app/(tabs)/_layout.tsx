@@ -2,12 +2,13 @@ import { Tabs } from "expo-router";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PlusButton } from "./dummy";
+import { theme } from "../styling/stylingStandards";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#ffd33d",
+        tabBarActiveTintColor: theme.Colors.accent,
         tabBarStyle: {
           backgroundColor: "#ffff",
           borderTopWidth: 0,

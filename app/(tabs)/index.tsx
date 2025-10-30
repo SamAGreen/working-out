@@ -1,7 +1,9 @@
 import { Image } from "expo-image";
-import { useEffect } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import AddItemModal from "../components/AddItemModal";
+import AddWorkoutItem from "../components/AddWorkoutItem";
+import DeleteItemModal from "../components/DeleteItemModal";
 import ScreenWrapper from "../components/ScreenWrapper";
 import WorkoutListItem from "../components/WorkoutListItem";
 import { useAddLocation } from "../stores/addLocationStore";
@@ -12,8 +14,7 @@ import {
   useWorkouts,
 } from "../stores/workoutStore";
 import { theme } from "../styling/stylingStandards";
-import { WorkoutShell } from "../util/dataTypes";
-import { getCurrentTimestamp } from "../util/time";
+import { Workout, WorkoutShell } from "../util/dataTypes";
 
 export default function Index() {
   const workouts = useWorkouts();
@@ -25,16 +26,10 @@ export default function Index() {
   const plusLocation = useAddLocation((state) => state.plusLocation);
   const resetAddLocation = useAddLocation((state) => state.resetAddLocation);
 
-  const createWorkoutShell = (name: string): WorkoutShell => {
-    return {
-      name: name,
-      date: getCurrentTimestamp(),
-      duration: null,
-      finished: 0,
-    };
-  };
-
   const image = require("../../assets/images/thedon.jpg");
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [workoutToDelete, setWorkoutToDelete] = useState<Workout | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -42,12 +37,53 @@ export default function Index() {
     })();
   }, [getAllWorkouts]);
 
-  const handleDelete = async (id: number) => {
-    const result = await deleteWorkout(id);
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        resetAddLocation();
+      };
+    }, [resetAddLocation])
+  );
+
+  const handleAdd = async (workout: WorkoutShell) => {
+    resetAddLocation();
+    const result = await addWorkout(workout);
     if (!result.success) {
       console.log("Something went wrong handling delete: ", result.error);
     }
   };
+
+  const handleLongPress = useCallback((workout: Workout) => {
+    setWorkoutToDelete(workout);
+    setShowDeleteModal(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (workoutToDelete) {
+      const result = await deleteWorkout(workoutToDelete.id);
+      if (!result.success) {
+        console.log("Something went wrong handling delete: ", result.error);
+      }
+      setShowDeleteModal(false);
+      setWorkoutToDelete(null);
+    }
+  }, [workoutToDelete]);
+
+  const renderWorkoutItem = useCallback(
+    ({ item }: { item: Workout }) => (
+      <WorkoutListItem
+        workout={item}
+        onPress={(id) =>
+          router.push({
+            pathname: "/workouts/[workout]",
+            params: { workout: id },
+          })
+        }
+        onLongPress={handleLongPress}
+      />
+    ),
+    [handleLongPress]
+  );
 
   return (
     <ScreenWrapper style={styles.container}>
@@ -59,24 +95,26 @@ export default function Index() {
         />
       </View>
       <View style={styles.listContainer}>
+        {plusLocation === localLocation && (
+          <AddWorkoutItem handleAdd={handleAdd} />
+        )}
         <FlatList
           showsVerticalScrollIndicator={false}
           data={workouts}
-          renderItem={({ item }) => (
-            <WorkoutListItem workout={item} handleDelete={handleDelete} />
-          )}
+          renderItem={renderWorkoutItem}
           style={styles.list}
           ItemSeparatorComponent={() => (
             <View style={{ height: theme.Spacing.xs }} />
           )}
         />
+        <DeleteItemModal
+          showModal={showDeleteModal}
+          setShowModal={setShowDeleteModal}
+          itemName={workoutToDelete?.name ?? ""}
+          itemType={"Workout"}
+          handleDelete={handleConfirmDelete}
+        />
       </View>
-      <AddItemModal
-        visible={plusLocation === localLocation}
-        onClose={resetAddLocation}
-        onAdd={addWorkout}
-        createShell={createWorkoutShell}
-      />
     </ScreenWrapper>
   );
 }

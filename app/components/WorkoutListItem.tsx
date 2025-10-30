@@ -1,45 +1,27 @@
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { memo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { theme } from "../styling/stylingStandards";
 import { Workout } from "../util/dataTypes";
-import { formatDate } from "../util/time";
+import { formatDateFromISO } from "../util/time";
 import CustomText from "./CustomText";
-import DeleteItemModal from "./DeleteItemModal";
 
 interface WorkoutListItemProps {
   workout: Workout;
-  handleDelete: (id: number) => void;
+  onPress: (id: number) => void;
+  onLongPress: (workout: Workout) => void;
 }
 
-const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
-  workout,
-  handleDelete,
-}) => {
-  const router = useRouter();
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const handleConfirmDelete = () => {
-    setShowDeleteModal(false);
-    handleDelete(workout.id);
-  };
-
-  return (
-    <>
+const WorkoutListItem: React.FC<WorkoutListItemProps> = React.memo(
+  ({ workout, onPress, onLongPress }) => {
+    return (
       <Pressable
         style={({ pressed }) => [
           styles.container,
           pressed && { opacity: 0.7 },
           !workout.finished && { backgroundColor: theme.Colors.primary_100 },
         ]}
-        onPress={() =>
-          router.push({
-            pathname: "/workouts/[workout]",
-            params: { workout: workout.id },
-          })
-        }
-        onLongPress={() => setShowDeleteModal(true)}
+        onPress={() => onPress(workout.id)}
+        onLongPress={() => onLongPress(workout)}
       >
         <CustomText
           size={theme.FontSizes.xxl}
@@ -50,32 +32,17 @@ const WorkoutListItem: React.FC<WorkoutListItemProps> = ({
         </CustomText>
 
         <View style={styles.details}>
-          <CustomText
-            size={theme.FontSizes.medium}
-            weight={theme.FontWeights.regular}
-            color={theme.Colors.text}
-          >
-            {formatDate(workout.date)}
+          <CustomText size={theme.FontSizes.medium} color={theme.Colors.text}>
+            {formatDateFromISO(workout.date)}
           </CustomText>
-          <CustomText
-            size={theme.FontSizes.medium}
-            weight={theme.FontWeights.regular}
-            color={theme.Colors.text}
-          >
+          <CustomText size={theme.FontSizes.medium} color={theme.Colors.text}>
             {workout.duration ?? "-"}
           </CustomText>
         </View>
       </Pressable>
-      <DeleteItemModal
-        showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
-        itemName={workout.name}
-        itemType={"Exercise"}
-        handleDelete={handleConfirmDelete}
-      />
-    </>
-  );
-};
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -94,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WorkoutListItem;
+export default memo(WorkoutListItem);
