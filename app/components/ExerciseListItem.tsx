@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { theme } from "../styling/stylingStandards";
+import { Exercise, metricToNiceString } from "../util/dataTypes";
 import CustomText from "./CustomText";
 import DeleteItemModal from "./DeleteItemModal";
-import { Exercise, MetricToNiceString } from "../util/dataTypes";
 
 interface ExerciseListItemProps {
   exercise: Exercise;
@@ -43,7 +43,7 @@ const ExerciseListItemComponent: React.FC<ExerciseListItemProps> = ({
             size={theme.FontSizes.small}
             color={theme.Colors.text_800}
           >
-            {MetricToNiceString(exercise.trackingMetric)}
+            {metricToNiceString(exercise.trackingMetric)}
           </CustomText>
         </View>
       </Pressable>
@@ -61,7 +61,7 @@ const ExerciseListItemComponent: React.FC<ExerciseListItemProps> = ({
 
 const ExerciseListItem = React.memo(
   ExerciseListItemComponent,
-  (prevProps, nextProps) => prevProps.exercise.id === nextProps.exercise.id,
+  (prevProps, nextProps) => prevProps.exercise.id === nextProps.exercise.id
 );
 
 const styles = StyleSheet.create({

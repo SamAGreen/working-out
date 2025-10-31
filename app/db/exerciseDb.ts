@@ -22,7 +22,7 @@ export async function setupWorkoutDB(db: SQLiteDatabase) {
     { name: "Lateral Raise", trackingMetric: TrackingMetric.WEIGHT_REPS },
     { name: "Leg Extension", trackingMetric: TrackingMetric.WEIGHT_REPS },
     { name: "Calf Raise", trackingMetric: TrackingMetric.WEIGHT_REPS },
-    { name: "Leg Raise", trackingMetric: TrackingMetric.WEIGHT_REPS },
+    { name: "Leg Raise", trackingMetric: TrackingMetric.REPS },
     { name: "Lying Leg Raise", trackingMetric: TrackingMetric.REPS },
     {
       name: "Bulgarian Split Squat",

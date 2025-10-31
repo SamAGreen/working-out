@@ -16,7 +16,7 @@ import { theme } from "../styling/stylingStandards";
 import {
   Exercise,
   ExerciseShell,
-  MetricToNiceString,
+  metricToNiceString,
   TrackingMetric,
 } from "../util/dataTypes";
 
@@ -65,7 +65,7 @@ export default function ExercisesScreen() {
 
   const [items, setItems] = useState(
     Object.values(TrackingMetric).map((key) => ({
-      label: MetricToNiceString(key),
+      label: metricToNiceString(key),
       value: key,
     }))
   );

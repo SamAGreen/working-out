@@ -60,7 +60,7 @@ export async function setupSetDb(db: SQLiteDatabase) {
             workoutId: workout.id,
             exerciseId: exercise.id,
             metricValueOne: getRandomInt(1, 100),
-            metricValueTwo: getRandomInt(1, 30),
+            metricValueTwo: getRandomInt(1, 15),
           });
         }
       }
@@ -94,7 +94,7 @@ export async function getSetsByWorkoutIdFromDb(
     workoutId: set.workout_id,
     exerciseId: set.exercise_id,
     metricValueOne: set.metric_value_one,
-    metricValueTwo: set.metric_value_one,
+    metricValueTwo: set.metric_value_two,
   }));
 }
 

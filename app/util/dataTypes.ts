@@ -13,7 +13,7 @@ export enum TrackingMetric {
   WEIGHT_TIME = "weight_time",
 }
 
-export function MetricToNiceString(metric: TrackingMetric): string {
+export function metricToNiceString(metric: TrackingMetric): string {
   switch (metric) {
     case TrackingMetric.WEIGHT_REPS:
       return "Weight/Reps";

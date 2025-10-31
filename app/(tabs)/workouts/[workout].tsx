@@ -4,6 +4,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 import AnimatedScreenWrapper from "@/app/components/AnimatedScreenWrapper";
 import CustomText from "@/app/components/CustomText";
+import ExerciseSetsItem from "@/app/components/ExerciseSetsItem";
 import ScreenWrapper from "@/app/components/ScreenWrapper";
 import { useGetExercises } from "@/app/stores/exerciseStore";
 import { useGetSets, useSets } from "@/app/stores/setStore";
@@ -32,13 +33,6 @@ export default function WorkoutPage() {
   const getSetsByWorkoutId = useGetSets();
   const getExercisesById = useGetExercises();
   const [exercises, setExercises] = useState<Exercise[]>([]);
-
-  const getExerciseName = (id: number): string => {
-    const exercise = exercises.find((exercise) => exercise.id === id);
-
-    if (exercise) return exercise.name;
-    return "Yeah, I don't even know";
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,6 +64,7 @@ export default function WorkoutPage() {
 
       const result = await getExercisesById(uniqueIds);
       if (result.success) setExercises(result.data);
+      console.log(sets);
     };
 
     fetchExercises();
@@ -116,12 +111,17 @@ export default function WorkoutPage() {
         </CustomText>
         <View style={styles.listContainer}>
           <FlatList
-            data={sets}
+            data={exercises}
             renderItem={({ item }) => (
-              <View>
-                <CustomText>{getExerciseName(item.exerciseId)}</CustomText>
-              </View>
+              <ExerciseSetsItem
+                exercise={item}
+                sets={sets.filter((set) => set.exerciseId === item.id)}
+              />
             )}
+            ItemSeparatorComponent={() => (
+              <View style={{ height: theme.Spacing.xs }} />
+            )}
+            showsVerticalScrollIndicator={false}
           />
         </View>
       </View>
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerText: {
-    fontSize: theme.FontSizes.xl,
+    fontSize: theme.FontSizes.xxxl,
     fontWeight: "bold",
     color: theme.Colors.text,
     marginBottom: theme.Spacing.sm,
@@ -164,6 +164,17 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 2,
+    width: "100%",
+  },
+  exerciseContainer: {
+    backgroundColor: theme.Colors.background,
+    padding: 8,
+  },
+  columnContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignContent: "center",
   },
   toggleButton: {
     backgroundColor: theme.Colors.background,
