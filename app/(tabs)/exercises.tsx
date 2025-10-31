@@ -2,6 +2,7 @@ import { useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { AddExerciseItem } from "../components/AddExerciseItem";
+import DeleteItemModal from "../components/DeleteItemModal";
 import ExerciseListItem from "../components/ExerciseListItem";
 import ScreenWrapper from "../components/ScreenWrapper";
 import SearchBar from "../components/SearchBar";
@@ -32,6 +33,10 @@ export default function ExercisesScreen() {
   );
 
   const [searchValue, setSearchValue] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [exerciseToDelete, setExerciseToDelete] = useState<Exercise | null>(
+    null
+  );
 
   const getAllExercises = useGetAllExercises();
 
@@ -70,12 +75,16 @@ export default function ExercisesScreen() {
     }))
   );
 
-  const handleDelete = async (exercise: Exercise) => {
-    const result = await deleteExercise(exercise.id);
-    if (!result.success) {
-      console.log("Something went wrong handling delete: ", result.error);
+  const handleConfirmDelete = useCallback(async () => {
+    if (exerciseToDelete) {
+      const result = await deleteExercise(exerciseToDelete.id);
+      if (!result.success) {
+        console.log("Something went wrong handling delete: ", result.error);
+      }
+      setShowDeleteModal(false);
+      setExerciseToDelete(null);
     }
-  };
+  }, [exerciseToDelete]);
 
   const handleAddNewExercise = async () => {
     if (!newExerciseName.trim()) return;
@@ -95,6 +104,11 @@ export default function ExercisesScreen() {
     setSelectedMetric(TrackingMetric.WEIGHT_REPS);
     resetAddLocation();
   };
+
+  const handleLongPress = useCallback((exercise: Exercise) => {
+    setExerciseToDelete(exercise);
+    setShowDeleteModal(true);
+  }, []);
 
   return (
     <ScreenWrapper style={styles.container}>
@@ -121,7 +135,7 @@ export default function ExercisesScreen() {
       <FlatList
         data={filteredExercises}
         renderItem={({ item }) => (
-          <ExerciseListItem exercise={item} onDelete={handleDelete} />
+          <ExerciseListItem exercise={item} onLongPress={handleLongPress} />
         )}
         keyExtractor={(item) => item.id.toString()}
         style={styles.list}
@@ -129,6 +143,13 @@ export default function ExercisesScreen() {
         ItemSeparatorComponent={() => (
           <View style={{ height: theme.Spacing.xs }} />
         )}
+      />
+      <DeleteItemModal
+        showModal={showDeleteModal}
+        setShowModal={setShowDeleteModal}
+        itemName={exerciseToDelete?.name ?? ""}
+        itemType={"Exercise"}
+        handleDelete={handleConfirmDelete}
       />
     </ScreenWrapper>
   );

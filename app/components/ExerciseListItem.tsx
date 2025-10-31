@@ -3,28 +3,21 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { theme } from "../styling/stylingStandards";
 import { Exercise, metricToNiceString } from "../util/dataTypes";
 import CustomText from "./CustomText";
-import DeleteItemModal from "./DeleteItemModal";
 
 interface ExerciseListItemProps {
   exercise: Exercise;
-  onDelete: (exercise: Exercise) => void;
+  onLongPress: (exercise: Exercise) => void;
 }
 
 const ExerciseListItemComponent: React.FC<ExerciseListItemProps> = ({
   exercise,
-  onDelete,
+  onLongPress,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleConfirmDelete = () => {
-    setShowDeleteModal(false);
-    onDelete(exercise);
-  };
-
   return (
-    <>
       <Pressable
-        onLongPress={() => setShowDeleteModal(true)}
+        onLongPress={() => onLongPress(exercise)}
         style={({ pressed }) => [
           styles.container,
           pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] },
@@ -47,15 +40,6 @@ const ExerciseListItemComponent: React.FC<ExerciseListItemProps> = ({
           </CustomText>
         </View>
       </Pressable>
-
-      <DeleteItemModal
-        showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
-        itemName={exercise.name}
-        itemType={"Exercise"}
-        handleDelete={handleConfirmDelete}
-      />
-    </>
   );
 };
 
