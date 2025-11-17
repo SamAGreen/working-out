@@ -13,18 +13,20 @@ import {
   useSetWorkoutFinished,
 } from "@/app/stores/workoutStore";
 import { theme } from "@/app/styling/stylingStandards";
-import { Exercise } from "@/app/util/dataTypes";
+import { Exercise, Workout } from "@/app/util/dataTypes";
 import { formatDateFromISO } from "@/app/util/util";
 
 export default function WorkoutPage() {
   const { workout } = useLocalSearchParams<{ workout: string }>();
   const [loading, setLoading] = useState(true);
-  const [workoutData, setWorkoutData] = useState<null | {
-    id: number;
-    name: string;
-    date: string;
-    finished: boolean;
-  }>(null);
+  const [workoutData, setWorkoutData] = useState<Workout>({
+    name: "",
+    id: -1,
+    date: "",
+    duration: null,
+    finished: false
+
+  });
 
   const setWorkoutFinished = useSetWorkoutFinished();
   const getWorkout = useGetWorkout();
@@ -33,6 +35,11 @@ export default function WorkoutPage() {
   const getSetsByWorkoutId = useGetSets();
   const getExercisesById = useGetExercises();
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [selectedExerciseId, setSelectedExerciseId] = useState(-1);
+
+  const onPress = (id: number) => {
+    setSelectedExerciseId(id);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +71,6 @@ export default function WorkoutPage() {
 
       const result = await getExercisesById(uniqueIds);
       if (result.success) setExercises(result.data);
-      console.log(sets);
     };
 
     fetchExercises();
@@ -112,31 +118,42 @@ export default function WorkoutPage() {
         <View style={styles.listContainer}>
           <FlatList
             data={exercises}
+            keyExtractor={(set) => set.id.toString()}
             renderItem={({ item }) => (
               <ExerciseSetsItem
                 exercise={item}
                 sets={sets.filter((set) => set.exerciseId === item.id)}
+                selected={item.id === selectedExerciseId}
+                onPress={setSelectedExerciseId}
               />
             )}
             ItemSeparatorComponent={() => (
               <View style={{ height: theme.Spacing.xs }} />
             )}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: theme.Spacing.sm,
+            }}
+            ListFooterComponent={
+              <Pressable
+                style={({ pressed }) => [
+                  styles.toggleButton,
+                  workoutData.finished && styles.toggleButtonActive,
+                  pressed && { opacity: 0.8 },
+                ]}
+                onPress={handleFinishWorkout}
+              >
+                <CustomText
+                  weight={theme.FontWeights.bold}
+                  style={styles.toggleText}
+                >
+                  {workoutData.finished ? "Edit Workout" : "Finish Workout"}
+                </CustomText>
+              </Pressable>
+            }
           />
         </View>
       </View>
-
-      <Pressable
-        style={[
-          styles.toggleButton,
-          workoutData.finished && styles.toggleButtonActive,
-        ]}
-        onPress={handleFinishWorkout}
-      >
-        <Text style={styles.toggleText}>
-          {workoutData.finished ? "Edit Workout" : "Finish Workout"}
-        </Text>
-      </Pressable>
     </AnimatedScreenWrapper>
   );
 }
@@ -177,18 +194,22 @@ const styles = StyleSheet.create({
     alignContent: "center",
   },
   toggleButton: {
-    backgroundColor: theme.Colors.background,
-    paddingHorizontal: theme.Spacing.lg,
-    paddingVertical: theme.Spacing.sm,
+    backgroundColor: theme.Colors.primary_30,
+    padding: theme.Spacing.md,
     borderRadius: theme.Radius.md,
-    margin: theme.Spacing.md,
-    alignItems: "center",
+    marginBottom: theme.Spacing.sm,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: theme.Colors.background_800,
+    alignSelf: "center",
   },
   toggleButtonActive: {
-    backgroundColor: theme.Colors.primary_100,
+    backgroundColor: theme.Colors.background,
   },
   toggleText: {
-    color: theme.Colors.text,
-    fontWeight: "600",
+    color: theme.Colors.primary,
+    width: "100%",
+    textAlign: "center",
+    fontSize: theme.FontSizes.xl,
   },
 });

@@ -35,7 +35,7 @@ export const PlusButton = () => {
         Alert.alert("Planning tab + pressed");
       else if (currentRouteName === "exercises") setAddLocation("exercises");
       else if (currentRouteName === "workouts/[workout]")
-        Alert.alert("Workout + pressed");
+        Alert.alert(currentRouteName);
     }
   };
 

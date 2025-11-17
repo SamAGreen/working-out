@@ -59,3 +59,19 @@ export type WorkoutShell = {
   duration: number | null;
   finished: number;
 };
+
+
+export type ExerciseSet = {
+  id: number;
+  workoutId: number; // foreign key
+  exerciseId: number; // foreign key
+  metricValueOne: number; // e.g. Weight
+  metricValueTwo: number | null; // Reps
+};
+
+export type SetShell = {
+  workoutId: number;
+  exerciseId: number;
+  metricValueOne: number;
+  metricValueTwo: number | null;
+};
