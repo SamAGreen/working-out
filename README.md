@@ -1,6 +1,7 @@
 # Working Out - A Workout Tracker
 
-Something I should work on more often. Color and Theming loosely inspired by this [Donny Benét music video](https://www.youtube.com/watch?v=qh74fm-FGFo). (Please do not click if you highly value professionalism and are considering hiring me)
+A cross platform app developed with React Native and something I should work on more often. 
+Color and Theming loosely inspired by this [Donny Benét music video](https://www.youtube.com/watch?v=qh74fm-FGFo). (Please do not click if you highly value professionalism and are considering hiring me)
 
 
 ## Basic Features
