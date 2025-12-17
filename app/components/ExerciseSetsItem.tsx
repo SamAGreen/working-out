@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useAddSet, useUpdateSet } from "../stores/setStore";
 import { theme } from "../styling/stylingStandards";
-import { Exercise, ExerciseSet, metricToNiceString } from "../util/dataTypes";
+import { Exercise, ExerciseSet, metricToNiceString, metricToUnits } from "../util/dataTypes";
 import CustomText from "./CustomText";
-import CustomTextInput from "./CustomTextInput";
+import ExerciseSetRow from "./ExerciseSetRow";
 
 interface ExerciseSetsItemProps {
   exercise: Exercise;
@@ -14,74 +14,44 @@ interface ExerciseSetsItemProps {
   onLongPress?: (exercise: Exercise) => void;
 }
 
-type Change = {
-  setId: number;
-  metric: number; // 1 or 2
-  value: number;
-};
-
-type LocalValues = {
-  [setId: number]: { metricValueOne?: string; metricValueTwo?: string };
-};
-
 const ExerciseSetsItem: React.FC<ExerciseSetsItemProps> = memo(
   ({ exercise, sets, selected, onPress, onLongPress }) => {
     const setSetById = useUpdateSet();
     const addSetToStore = useAddSet();
 
     const [localSets, setLocalSets] = useState<ExerciseSet[]>(sets);
-    const [localValues, setLocalValues] = useState<LocalValues>({});
-    const changesRef = useRef<Change[]>([]);
 
-    const handlePress = () => onPress(exercise.id);
+    const metricLabels = metricToNiceString(exercise.trackingMetric).split("/");
+    const metricUnits = metricToUnits(exercise.trackingMetric);
 
-    useEffect(() => {
-      setLocalSets(sets);
-      const initialValues: LocalValues = {};
-      sets.forEach((set) => {
-        initialValues[set.id] = {
-          metricValueOne: set.metricValueOne?.toString() ?? "",
-          metricValueTwo: set.metricValueTwo?.toString() ?? "",
-        };
-      });
-      setLocalValues(initialValues);
-    }, [sets]);
+    const handleFocusExercise = useCallback(
+      () => onPress(exercise.id),
+      [onPress, exercise.id]
+    );
 
-    const getTrackingMetrics = (exercise: Exercise) =>
-      metricToNiceString(exercise.trackingMetric).split("/");
+    const handleCommitChange = useCallback(
+      async (id: number, metric: 1 | 2, value: number) => {
+        if (id > 0) {
+          await setSetById(id, metric, value);
+        } else {
+          // Update negative id sets in local state
+          setLocalSets((prev) =>
+            prev.map((s) =>
+              s.id === id
+                ? {
+                    ...s,
+                    metricValueOne: metric === 1 ? value : s.metricValueOne,
+                    metricValueTwo: metric === 2 ? value : s.metricValueTwo,
+                  }
+                : s
+            )
+          );
+        }
+      },
+      [setSetById]
+    );
 
-    const handleInputChange = (
-      setId: number,
-      field: "metricValueOne" | "metricValueTwo",
-      value: string
-    ) => {
-      setLocalValues((prev) => ({
-        ...prev,
-        [setId]: { ...prev[setId], [field]: value },
-      }));
-
-      const metricIndex = field === "metricValueOne" ? 1 : 2;
-      const numericValue = Number(value) || 0;
-
-      const index = changesRef.current.findIndex(
-        (c) => c.setId === setId && c.metric === metricIndex
-      );
-      if (index !== -1) {
-        changesRef.current[index] = {
-          setId,
-          metric: metricIndex,
-          value: numericValue,
-        };
-      } else {
-        changesRef.current.push({
-          setId,
-          metric: metricIndex,
-          value: numericValue,
-        });
-      }
-    };
-
-    const addNewSet = () => {
+    const addNewSet = useCallback(() => {
       const newId = Math.min(...localSets.map((s) => s.id), 0) - 1;
       if (sets[0]) {
         const newSet: ExerciseSet = {
@@ -92,48 +62,13 @@ const ExerciseSetsItem: React.FC<ExerciseSetsItemProps> = memo(
           metricValueTwo: null,
         };
         setLocalSets((prev) => [...prev, newSet]);
-        setLocalValues((prev) => ({
-          ...prev,
-          [newId]: { metricValueOne: "", metricValueTwo: "" },
-        }));
       }
-    };
+    }, [exercise.id, localSets, sets]);
 
-    // Flush changes to store
-    const flushChanges = async () => {
-      // Update existing sets
-      for (const change of changesRef.current) {
-        if (change.setId > 0)
-          await setSetById(change.setId, change.metric, change.value);
-      }
-      changesRef.current = [];
-      if (sets[0]) {
-        // Add new sets
-        for (const set of localSets) {
-          if (set.id < 0) {
-            const values = localValues[set.id];
-            await addSetToStore({
-              exerciseId: set.exerciseId,
-              metricValueOne: Number(values.metricValueOne) || 0,
-              metricValueTwo: Number(values.metricValueTwo) || 0,
-              workoutId: sets[0].workoutId ?? -1,
-            });
-          }
-        }
-      }
-    };
-
+    // Sync with store when sets prop changes
     useEffect(() => {
-      return () => {
-        flushChanges();
-      };
-    }, []);
-
-    useEffect(() => {
-      if (!selected && changesRef.current.length > 0) {
-        flushChanges();
-      }
-    }, [selected]);
+      setLocalSets(sets);
+    }, [sets]);
 
     return (
       <Pressable
@@ -142,7 +77,7 @@ const ExerciseSetsItem: React.FC<ExerciseSetsItemProps> = memo(
           pressed && { opacity: 0.7 },
           selected && { backgroundColor: theme.Colors.background_50 },
         ]}
-        onPress={handlePress}
+        onPress={handleFocusExercise}
         onLongPress={() => onLongPress?.(exercise)}
       >
         <CustomText
@@ -154,37 +89,23 @@ const ExerciseSetsItem: React.FC<ExerciseSetsItemProps> = memo(
         </CustomText>
 
         <View style={styles.metricContainer}>
-          {getTrackingMetrics(exercise).map((metric, metricIndex) => (
-            <View style={styles.metricColumn} key={metricIndex}>
-              <CustomText
-                weight={theme.FontWeights.medium}
-                color={theme.Colors.text}
-              >
-                {metric}
+          <View style={styles.metricHeader}>
+            {metricLabels.map((label, index) => (
+              <CustomText size={theme.FontSizes.large} key={index}>
+                {label}
               </CustomText>
+            ))}
+          </View>
 
-              {localSets
-                .filter((set) => set.exerciseId === exercise.id)
-                .map((set) => {
-                  const field =
-                    metricIndex === 0 ? "metricValueOne" : "metricValueTwo";
-                  return (
-                    <CustomTextInput
-                      key={set.id}
-                      value={localValues[set.id]?.[field] ?? ""}
-                      onChangeText={(value) =>
-                        handleInputChange(set.id, field, value)
-                      }
-                      keyboardType="numeric"
-                      style={styles.input}
-                      size={theme.FontSizes.medium}
-                      color={theme.Colors.text}
-                      weight={theme.FontWeights.medium}
-                      onFocus={handlePress}
-                    />
-                  );
-                })}
-            </View>
+          {localSets.map((set) => (
+            <ExerciseSetRow
+              key={set.id}
+              set={set}
+              metricLabels={metricLabels}
+              metricUnits={metricUnits}
+              onChange={handleCommitChange}
+              onFocusExercise={handleFocusExercise}
+            />
           ))}
         </View>
 
@@ -213,24 +134,8 @@ const styles = StyleSheet.create({
   },
   metricContainer: {
     marginTop: theme.Spacing.sm,
-    flexDirection: "row",
-    justifyContent: "space-around",
     borderRadius: theme.Radius.sm,
     paddingVertical: theme.Spacing.sm,
-  },
-  metricColumn: {
-    alignItems: "center",
-    gap: theme.Spacing.xs,
-  },
-  input: {
-    width: 60,
-    textAlign: "center",
-    backgroundColor: theme.Colors.background_100,
-    borderWidth: 1,
-    borderColor: theme.Colors.background_800,
-    borderRadius: theme.Radius.sm,
-    paddingVertical: theme.Spacing.xs,
-    paddingHorizontal: theme.Spacing.xs,
   },
   addButton: {
     marginTop: theme.Spacing.sm,
@@ -238,6 +143,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.Colors.background_800,
     borderRadius: theme.Radius.sm,
     alignItems: "center",
+  },
+  metricHeader: {
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
 });
 

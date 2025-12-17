@@ -34,6 +34,27 @@ export function metricToNiceString(metric: TrackingMetric): string {
   }
 }
 
+export function metricToUnits(metric: TrackingMetric): string[] {
+  switch (metric) {
+    case TrackingMetric.WEIGHT_REPS:
+      return ["kg"];
+    case TrackingMetric.REPS:
+      return [];
+    case TrackingMetric.CALORIES_TIME:
+      return ["kcal", "s"];
+    case TrackingMetric.TIME:
+      return ["s"];
+    case TrackingMetric.DISTANCE:
+      return ["km"];
+    case TrackingMetric.DISTANCE_TIME:
+      return ["km", "s"];
+    case TrackingMetric.WEIGHT_DISTANCE:
+      return ["kg", "m"];
+    case TrackingMetric.WEIGHT_TIME:
+      return ["kg", "s"];
+  }
+}
+
 export type Exercise = {
   id: number;
   name: string;
@@ -59,7 +80,6 @@ export type WorkoutShell = {
   duration: number | null;
   finished: number;
 };
-
 
 export type ExerciseSet = {
   id: number;
